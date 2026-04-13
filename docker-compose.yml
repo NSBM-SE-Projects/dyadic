@@ -1,0 +1,20 @@
+# Author: Dwain
+
+services:
+  db:
+    # Thamindu & Ashen (Mac users): comment the line below and uncomment the azure-sql-edge line.
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    # image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: blindmatch-sql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-adminPass123@}"
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - blindmatch-sql-data:/var/opt/mssql
+
+volumes:
+  blindmatch-sql-data:
+
