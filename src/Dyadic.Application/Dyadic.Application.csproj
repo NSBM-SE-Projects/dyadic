@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\BlindMatch.Domain\BlindMatch.Domain.csproj" />
+    <ProjectReference Include="..\Dyadic.Domain\Dyadic.Domain.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

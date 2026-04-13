@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace BlindMatch.Infrastructure.Migrations
+namespace Dyadic.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

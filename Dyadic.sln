@@ -5,19 +5,19 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{317306E1-69FC-4DD9-8B71-499E05730D3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlindMatch.Application", "src\BlindMatch.Application\BlindMatch.Application.csproj", "{FA26AF15-95DA-4446-A583-E545EEF2CB97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dyadic.Application", "src\Dyadic.Application\Dyadic.Application.csproj", "{FA26AF15-95DA-4446-A583-E545EEF2CB97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlindMatch.Domain", "src\BlindMatch.Domain\BlindMatch.Domain.csproj", "{85E8D01F-CE26-4C5A-A0C2-8C789840470A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dyadic.Domain", "src\Dyadic.Domain\Dyadic.Domain.csproj", "{85E8D01F-CE26-4C5A-A0C2-8C789840470A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlindMatch.Infrastructure", "src\BlindMatch.Infrastructure\BlindMatch.Infrastructure.csproj", "{F79F3EF9-3A8B-4C29-BC11-0DF40FE4ACFF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dyadic.Infrastructure", "src\Dyadic.Infrastructure\Dyadic.Infrastructure.csproj", "{F79F3EF9-3A8B-4C29-BC11-0DF40FE4ACFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlindMatch.Web", "src\BlindMatch.Web\BlindMatch.Web.csproj", "{B6E7AD33-C59A-4BEB-A0D6-6497EFF8407C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dyadic.Web", "src\Dyadic.Web\Dyadic.Web.csproj", "{B6E7AD33-C59A-4BEB-A0D6-6497EFF8407C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{34AFB4E7-F74F-4BCE-A1B5-91BBE0FA66BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlindMatch.IntegrationTests", "tests\BlindMatch.IntegrationTests\BlindMatch.IntegrationTests.csproj", "{6EC6F2AE-69BA-42A0-B7C9-4538E50B34B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dyadic.IntegrationTests", "tests\Dyadic.IntegrationTests\Dyadic.IntegrationTests.csproj", "{6EC6F2AE-69BA-42A0-B7C9-4538E50B34B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlindMatch.UnitTests", "tests\BlindMatch.UnitTests\BlindMatch.UnitTests.csproj", "{A4058CCE-40A9-4C0D-A099-6B2165F4E446}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dyadic.UnitTests", "tests\Dyadic.UnitTests\Dyadic.UnitTests.csproj", "{A4058CCE-40A9-4C0D-A099-6B2165F4E446}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

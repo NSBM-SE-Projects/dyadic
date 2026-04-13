@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BlindMatch.Web.Pages;
+namespace Dyadic.Web.Pages;
 
 public class IndexModel : PageModel
 {

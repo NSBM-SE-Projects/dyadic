@@ -1,4 +1,4 @@
-namespace BlindMatch.IntegrationTests;
+namespace Dyadic.UnitTests;
 
 public class UnitTest1
 {

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace BlindMatch.Infrastructure;
+namespace Dyadic.Infrastructure;
 
 public class ApplicationDbContext: DbContext {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
