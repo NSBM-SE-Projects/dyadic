@@ -7,7 +7,9 @@
 .env
 .env.*.local
 
-# AI
+# Personal Files
+memory/
+references/
 CLAUDE.md
 
 # User-specific files
