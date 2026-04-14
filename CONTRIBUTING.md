@@ -2,7 +2,7 @@
 
 Author: Dwain
 
-This guide covers **Local Setup**, **Day-to-Day Git Branching Rules** and **PR Conventions**, read it before your first commit : )
+This guide covers **Local Setup**, **Day-to-Day Git Branching Rules** and **PR Conventions**, read it before your first commit.
 
 ## Table of Contents
 1. [Make Commands](#make-commands)
