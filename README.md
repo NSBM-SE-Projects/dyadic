@@ -39,15 +39,17 @@ Clean-architecture layering, dependency direction:
 
 ### 📁 Structure
 
+```
 src/
 ├── Dyadic.Domain/          🧩 Entities, enums, domain interfaces
-├── Dyadic.Application/     🧠 Services, business rules (blind-match logic lives here)
+├── Dyadic.Application/     🧠 Services, business rules  (blind-match logic lives here)
 ├── Dyadic.Infrastructure/  🏗️ DbContext, EF migrations, repositories
 └── Dyadic.Web/             🌐 ASP.NET Core Razor Pages — UI + controllers
 
 tests/
 ├── Dyadic.UnitTests/        🧪 Unit tests — mocked dependencies
 └── Dyadic.IntegrationTests/ 🔗Integration tests — real DB + HTTP pipeline
+```
 
 ## ⚡ Getting Started
 
@@ -77,25 +79,27 @@ dotnet test --collect:"XPlat Code Coverage"
 
 ## 👥 Team
 
-┌──────────┬────────────────────────────┬───────────────────────────────────────┐
-│ Member   │            Role            │           GitHub                      │
-├──────────┼────────────────────────────┼───────────────────────────────────────┤
-│ Dwain    │ Team Lead                  │ https://github.com/dwainXDL           │
-├──────────┼────────────────────────────┼───────────────────────────────────────┤
-│ Thamindu │ TBA                        │ https://github.com/PWTMihisara        │
-├──────────┼────────────────────────────┼───────────────────────────────────────┤
-│ Ashen    │ TBA                        │https://github.com/drnykteresteinwayne │
-├──────────┼────────────────────────────┼───────────────────────────────────────┤
-│ Yameesha │ TBA                        │https://github.com/Yameeshaa           │
-├──────────┼────────────────────────────┼───────────────────────────────────────┤
-│ Thiranya │ TBA                        │https://github.com/thiranya123         │
-├──────────┼────────────────────────────┼───────────────────────────────────────┤
-│ Nisith   │ TBA                        │                                       │
-├──────────┼────────────────────────────┼───────────────────────────────────────┤
-│ Sewwandi │ TBA                        │https://github.com/kmss-sew            │
-├──────────┼────────────────────────────┼───────────────────────────────────────┤
-│ Isira    │ TBA                        │https://github.com/imanthaisira-beep   │
-└──────────┴────────────────────────────┴───────────────────────────────────────┘
+```
+┌──────────┬────────────────────────────┬────────────────────────────────────────┐
+│ Member   │            Role            │           GitHub                       │
+├──────────┼────────────────────────────┼────────────────────────────────────────┤
+│ Dwain    │ Team Lead                  │ https://github.com/dwainXDL            │
+├──────────┼────────────────────────────┼────────────────────────────────────────┤
+│ Thamindu │ TBA                        │ https://github.com/PWTMihisara         │
+├──────────┼────────────────────────────┼────────────────────────────────────────┤
+│ Ashen    │ TBA                        │ https://github.com/drnykteresteinwayne │
+├──────────┼────────────────────────────┼────────────────────────────────────────┤
+│ Yameesha │ TBA                        │https://github.com/Yameeshaa            │
+├──────────┼────────────────────────────┼────────────────────────────────────────┤
+│ Thiranya │ TBA                        │https://github.com/thiranya123          │
+├──────────┼────────────────────────────┼────────────────────────────────────────┤
+│ Nisith   │ TBA                        │                                        │
+├──────────┼────────────────────────────┼────────────────────────────────────────┤
+│ Sewwandi │ TBA                        │https://github.com/kmss-sew             │
+├──────────┼────────────────────────────┼────────────────────────────────────────┤
+│ Isira    │ TBA                        │https://github.com/imanthaisira-beep    │
+└──────────┴────────────────────────────┴────────────────────────────────────────┘
+```
 
 ## 🎓 Academic context
 
