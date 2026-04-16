@@ -11,6 +11,7 @@
 memory/
 references/
 CLAUDE.md
+.claude
 
 # User-specific files
 *.rsuser
