@@ -13,6 +13,7 @@ help:
 	@echo " make reset-db       WIPE DATABASE AND RE-APPLY ALL MIGRATIONS (BE CAREFUL!)"
 	@echo " make clean          REMOVE BUILD ARTIFACTS (bin/, obj/)"
 	@echo " make fresh          FULL RESET: CLEAN + RESET-DB"
+	@echo " make db-check       CHECK CONDITION OF DOCKER DATABASE"
 
 setup:
 	chmod +x ./setup.sh
