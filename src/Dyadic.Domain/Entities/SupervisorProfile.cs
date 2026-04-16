@@ -8,5 +8,5 @@ public class SupervisorProfile {
     public required string Department { get; set; }
     public int MaxStudents { get; set; }
 
-    public ICollection<Proposal> AcceptedProposal { get; set; } = new List<Proposal>();
+    public ICollection<Proposal> AcceptedProposals { get; set; } = new List<Proposal>();
 }
