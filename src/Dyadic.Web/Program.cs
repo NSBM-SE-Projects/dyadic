@@ -47,6 +47,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+
+app.UseStatusCodePagesWithReExecute("/Error", "?statusCode={0}");
+
 app.UseAuthorization();
 
 app.MapRazorPages();
