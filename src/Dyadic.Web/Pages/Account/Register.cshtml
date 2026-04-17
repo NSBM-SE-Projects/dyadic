@@ -5,42 +5,47 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-md-5">
+    <div class="col-12 col-sm-8 col-md-5 px-4">
         <h2 class="mb-4">Create an account</h2>
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="mb-3">
-                <label asp-for="Input.FullName" class="form-label"></label>
-                <input asp-for="Input.FullName" class="form-control" />
-                <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                <label asp-for="Input.FullName" class="form-label fw-semibold"></label>
+                <input asp-for="Input.FullName" class="form-control form-control-lg" />
+                <span asp-validation-for="Input.FullName" class="text-danger small"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="Input.Email" class="form-label"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="msb-3">
-                <label asp-for="Input.Password" class="form-label"></label>
-                <input asp-for="Input.Password" class="form-control" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <label asp-for="Input.Email" class="form-label fw-semibold"></label>
+                <input asp-for="Input.Email" class="form-control form-control-lg" />
+                <span asp-validation-for="Input.Email" class="text-danger small"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="Input.ConfirmPassword" class="form-label"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                <label asp-for="Input.Password" class="form-label fw-semibold"></label>
+                <input asp-for="Input.Password" class="form-control form-control-lg" />
+                <span asp-validation-for="Input.Password" class="text-danger small"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="Input.Role" class="form-label"></label>
-                <select asp-for="Input.Role" class="form-select">
-                    <option value="">-- Select Role --</option>
-                    <option value="Student">Student</option>
-                    <option value="Supervisor">Supervisor</option>
-                </select>
-                <span asp-validation-for="Input.Role" class="text-danger"></span>
+                <label asp-for="Input.ConfirmPassword" class="form-label fw-semibold"></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control form-control-lg" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Role</label>
+                <div class="d-flex gap-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" asp-for="Input.Role" value="Student" id="roleStudent" />
+                        <label class="form-check-label fs-5" for="roleStudent">Student</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" asp-for="Input.Role" value="Supervisor" id="roleSupervisor" />
+                        <label class="form-check-label fs-5" for="roleSupervisor">Supervisor</label>
+                    </div>
+                </div>
+                <span asp-validation-for="Input.Role" class="text-danger small"></span>
             </div>
 
-            <button type="submit" class="btn w-100 text-white" style="background-color: #009b5f;">Register</button>
+            <button type="submit" class="btn btn-lg w-100 text-white" style="background-color: #009b5f;">Register</button>
         </form>
         <p class="mt-3 text-center">
             Already have an account? <a asp-page="/Account/Login">Login</a>
