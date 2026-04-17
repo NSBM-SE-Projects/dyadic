@@ -7,20 +7,20 @@ public class ApplicationDbContext : DbContext {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
 
-    public DbSet<User> Users => Set<User>();
+    public DbSet<ApplicationUser> Users => Set<ApplicationUser>();
     public DbSet<StudentProfile> StudentProfiles => Set<StudentProfile>();
     public DbSet<SupervisorProfile> SupervisorProfiles => Set<SupervisorProfile>();
     public DbSet<Proposal> Proposals => Set<Proposal>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         // User <> StudentProfile (1:1)
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<ApplicationUser>()
         .HasOne(u => u.StudentProfile)
         .WithOne(sp => sp.User)
         .HasForeignKey<StudentProfile>(sp => sp.UserId);
 
         // User <> SupervisorProfile (1:1)
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<ApplicationUser>()
             .HasOne(u => u.SupervisorProfile)
             .WithOne(sp => sp.User)
             .HasForeignKey<SupervisorProfile>(sp => sp.UserId);
@@ -38,14 +38,9 @@ public class ApplicationDbContext : DbContext {
             .HasForeignKey(p => p.SupervisorId);
 
         // Unique Email
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<ApplicationUser>()
             .HasIndex(u => u.Email)
             .IsUnique();
-
-        // Store enums as string
-        modelBuilder.Entity<User>()
-            .Property(u => u.Role)
-            .HasConversion<string>();
 
         modelBuilder.Entity<Proposal>()
             .Property(p => p.Status)

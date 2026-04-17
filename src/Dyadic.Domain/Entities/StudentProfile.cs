@@ -3,7 +3,7 @@ namespace Dyadic.Domain.Entities;
 public class StudentProfile {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
-    public User User { get; set; } = null!;
+    public ApplicationUser User { get; set; } = null!;
 
     public required string IndexNumber { get; set; }
     public required string Batch { get; set; }
