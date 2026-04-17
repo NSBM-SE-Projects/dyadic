@@ -1,0 +1,48 @@
+@page
+@model Dyadic.Web.Pages.Student.MyProposalModel
+@{
+    ViewData["Title"] = "My Proposal";
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8">
+        <h2 class="mb-4">My Proposal</h2>
+
+        @if (Model.Proposal == null)
+        {
+            <p class="text-muted">You haven't submitted a proposal yet.</p>
+            <a asp-page="/Student/SubmitProposal" class="btn btn-lg text-white" style="background-color: #009b5f;">Create Proposal</a>
+        }
+        else
+        {
+            <div class="mb-3">
+                @{
+                    var (badgeClass, badgeText) = Model.Proposal.Status.ToString() switch
+                    {
+                        "Draft"      => ("bg-secondary", "Draft"),
+                        "Submitted"  => ("bg-primary", "Submitted"),
+                        "Accepted"   => ("bg-success", "Accepted"),
+                        "Rejected"   => ("bg-danger", "Rejected"),
+                        "Finalized"  => ("bg-dark", "Finalized"),
+                        _            => ("bg-secondary", "Unknown")
+                    };
+                }
+                <span class="badge @badgeClass fs-6">@badgeText</span>
+            </div>
+
+            <dl class="row">
+                <dt class="col-sm-3">Title</dt>
+                <dd class="col-sm-9">@Model.Proposal.Title</dd>
+                <dt class="col-sm-3">Description</dt>
+                <dd class="col-sm-9">@Model.Proposal.Description</dd>
+                <dt class="col-sm-3">Submitted</dt>
+                <dd class="col-sm-9">@Model.Proposal.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</dd>
+            </dl>
+
+            @if (Model.Proposal.Status == Dyadic.Domain.Entities.ProposalStatus.Draft)
+            {
+                <a asp-page="/Student/SubmitProposal" class="btn btn-outline-secondary">Edit Draft</a>
+            }
+        }
+    </div>
+</div>
