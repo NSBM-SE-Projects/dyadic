@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Dyadic.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Dyadic.Infrastructure.Data;
+using Dyadic.Application.Services;
+using Dyadic.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -27,17 +28,17 @@ builder.Services.ConfigureApplicationCookie(options => {
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
+builder.Services.AddScoped<IProposalService, ProposalService>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope()) {
     await DataSeeder.SeedAsync(scope.ServiceProvider);
 }
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
