@@ -1,52 +1,46 @@
 using Dyadic.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Dyadic.Infrastructure;
 
-public class ApplicationDbContext : DbContext {
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid> {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
 
-    public DbSet<User> Users => Set<User>();
     public DbSet<StudentProfile> StudentProfiles => Set<StudentProfile>();
     public DbSet<SupervisorProfile> SupervisorProfiles => Set<SupervisorProfile>();
     public DbSet<Proposal> Proposals => Set<Proposal>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        base.OnModelCreating(modelBuilder);
+
         // User <> StudentProfile (1:1)
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<ApplicationUser>()
         .HasOne(u => u.StudentProfile)
         .WithOne(sp => sp.User)
         .HasForeignKey<StudentProfile>(sp => sp.UserId);
 
         // User <> SupervisorProfile (1:1)
-        modelBuilder.Entity<User>()
+        modelBuilder.Entity<ApplicationUser>()
             .HasOne(u => u.SupervisorProfile)
             .WithOne(sp => sp.User)
             .HasForeignKey<SupervisorProfile>(sp => sp.UserId);
 
-        // StudentProfile <> Proposal (1:1 - one proposal per student)
+        // StudentProfile <> Proposal (1:1)
         modelBuilder.Entity<StudentProfile>()
             .HasOne(sp => sp.Proposal)
             .WithOne(p => p.Student)
             .HasForeignKey<Proposal>(p => p.StudentId);
 
-        // SupervisorProfile <> Proposals (1:many - supervisor accepts multiple)
+        // SupervisorProfile <> Proposals (1:many)
         modelBuilder.Entity<SupervisorProfile>()
             .HasMany(sp => sp.AcceptedProposals)
             .WithOne(p => p.Supervisor)
             .HasForeignKey(p => p.SupervisorId);
 
-        // Unique Email
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
-
-        // Store enums as string
-        modelBuilder.Entity<User>()
-            .Property(u => u.Role)
-            .HasConversion<string>();
-
+        // ProposalStatus as string in DB
         modelBuilder.Entity<Proposal>()
             .Property(p => p.Status)
             .HasConversion<string>();
