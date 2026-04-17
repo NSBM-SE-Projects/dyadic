@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dyadic.Infrastructure.Services;
 
-public class ProposalServices : IProposalSerivices
+public class ProposalService : IProposalService
 {
     private readonly ApplicationDbContext _db;
 
-    public ProposalServices(ApplicationDbContext db)
+    public ProposalService(ApplicationDbContext db)
     {
         _db = db;
     }

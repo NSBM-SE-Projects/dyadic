@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Dyadic.Application.Services;
 using Dyadic.Domain.Entities;
+using Dyadic.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,12 @@ public class SubmitProposalModel : PageModel
         var profile = await _db.StudentProfiles.FindAsync(user.Id);
         if (profile == null)
         {
-            profile = new StudentProfile { UserId = user.Id };
+            profile = new StudentProfile
+            {
+                UserId = user.Id,
+                IndexNumber = "N/A",
+                Batch = "N/A"
+            };
             _db.StudentProfiles.Add(profile);
             await _db.SaveChangesAsync();
         }
