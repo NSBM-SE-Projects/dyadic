@@ -6,7 +6,7 @@ using FluentAssertions;
 
 namespace Dyadic.UnitTests.Infrastructure;
 
-public class RoleSeederTests {
+public class RoleSeederTests : IDisposable {
     private readonly Mock<RoleManager<IdentityRole<Guid>>> _roleManagerMock;
     private readonly ServiceProvider _serviceProvider;
 
