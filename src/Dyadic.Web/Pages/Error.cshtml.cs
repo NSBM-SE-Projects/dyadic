@@ -12,6 +12,8 @@ public class ErrorModel : PageModel
 
     public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
+    public int StatusCode { get; set; }
+
     private readonly ILogger<ErrorModel> _logger;
 
     public ErrorModel(ILogger<ErrorModel> logger)
@@ -19,9 +21,10 @@ public class ErrorModel : PageModel
         _logger = logger;
     }
 
-    public void OnGet()
+    public void OnGet(int? statusCode)
     {
         RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+        StatusCode = statusCode ?? HttpContext.Response.StatusCode;
     }
 }
 
