@@ -1,22 +1,57 @@
+:root {
+    --dyadic-green: #009b5f;
+    --dyadic-green-dark: #007a4b;
+    --dyadic-green-light: #ccf0e0;
+    --dyadic-white: #ffffff;
+}
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--dyadic-green);
+}
+
+.footer {
+    padding: 1rem 0;
+    text-align: center;
+    overflow-x: hidden;
+    word-break: break-word;
+    white-space: normal;
+    font-size: 0.8rem;
+}
+
+/* Custom green theme overriding Bootstrap success */
+.bg-success,
+.btn-success {
+    background-color: var(--dyadic-green) !important;
+    border-color: var(--dyadic-green) !important;
+}
+
+.btn-success:hover {
+    background-color: var(--dyadic-green-dark) !important;
+    border-color: var(--dyadic-green-dark) !important;
+}
+
+.btn-outline-success {
+    color: var(--dyadic-green) !important;
+    border-color: var(--dyadic-green) !important;
+}
+
+.btn-outline-success:hover {
+    background-color: var(--dyadic-green) !important;
+    color: var(--dyadic-white) !important;
 }
