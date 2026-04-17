@@ -2,6 +2,7 @@ using Dyadic.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Dyadic.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Dyadic.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,10 @@ builder.Services.ConfigureApplicationCookie(options => {
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope()) {
+    await RoleSeeder.SeedRolesAsync(scope.ServiceProvider);
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -46,4 +51,4 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
-app.Run();
+await app.RunAsync();
