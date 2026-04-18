@@ -1,5 +1,7 @@
 using Dyadic.Application.Services;
+using Dyadic.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -10,10 +12,12 @@ namespace Dyadic.Web.Pages.Supervisor;
 public class ProfileModel : PageModel
 {
     private readonly ISupervisorProfileService _supervisorProfileService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public ProfileModel(ISupervisorProfileService supervisorProfileService)
+    public ProfileModel(ISupervisorProfileService supervisorProfileService, UserManager<ApplicationUser> userManager)
     {
         _supervisorProfileService = supervisorProfileService;
+        _userManager = userManager;
     }
 
     [BindProperty]
@@ -33,9 +37,10 @@ public class ProfileModel : PageModel
 
     public async Task OnGetAsync()
     {
-        var userId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
-        var profile = await _supervisorProfileService.GetOrCreateProfileAsync(userId);
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return;
 
+        var profile = await _supervisorProfileService.GetOrCreateProfileAsync(user.Id);
         Department = profile.Department;
         ResearchAreas = profile.ResearchAreas;
         MaxStudents = profile.MaxStudents;
@@ -44,26 +49,26 @@ public class ProfileModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Forbid();
+
         if (!ModelState.IsValid)
         {
-            var userId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
-            var profile = await _supervisorProfileService.GetOrCreateProfileAsync(userId);
+            var profile = await _supervisorProfileService.GetOrCreateProfileAsync(user.Id);
             AcceptedCount = profile.AcceptedProposals.Count;
             return Page();
         }
 
         try
         {
-            var userId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
-            await _supervisorProfileService.UpdateProfileAsync(userId, Department, ResearchAreas, MaxStudents);
+            await _supervisorProfileService.UpdateProfileAsync(user.Id, Department, ResearchAreas, MaxStudents);
             TempData["Success"] = "Profile updated successfully.";
             return RedirectToPage();
         }
         catch (InvalidOperationException ex)
         {
             ModelState.AddModelError(nameof(MaxStudents), ex.Message);
-            var userId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
-            var profile = await _supervisorProfileService.GetOrCreateProfileAsync(userId);
+            var profile = await _supervisorProfileService.GetOrCreateProfileAsync(user.Id);
             AcceptedCount = profile.AcceptedProposals.Count;
             return Page();
         }
