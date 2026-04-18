@@ -67,7 +67,18 @@ public class MyProposalModel : PageModel
         if (user == null) return Forbid();
 
         var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
-        await _proposalService.ConfirmMatchAsync(proposalId, profile.Id);
+
+        try
+        {
+            await _proposalService.ConfirmMatchAsync(proposalId, profile.Id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            Proposal = await _proposalService.GetByStudentIdAsync(profile.Id);
+            return Page();
+        }
+
         return RedirectToPage();
     }
 
@@ -77,7 +88,18 @@ public class MyProposalModel : PageModel
         if (user == null) return Forbid();
 
         var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
-        await _proposalService.RejectMatchAsync(proposalId, profile.Id);
+
+        try
+        {
+            await _proposalService.RejectMatchAsync(proposalId, profile.Id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            Proposal = await _proposalService.GetByStudentIdAsync(profile.Id);
+            return Page();
+        }
+
         return RedirectToPage();
     }
 }
