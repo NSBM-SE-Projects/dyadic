@@ -7,6 +7,7 @@ public class SupervisorProfile {
 
     public required string Department { get; set; }
     public int MaxStudents { get; set; }
+    public string ResearchAreas { get; set; } = string.Empty;
 
     public ICollection<Proposal> AcceptedProposals { get; set; } = new List<Proposal>();
 }
