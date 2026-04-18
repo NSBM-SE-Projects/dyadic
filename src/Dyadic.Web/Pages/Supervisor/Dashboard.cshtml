@@ -1,0 +1,68 @@
+@page
+@model Dyadic.Web.Pages.Supervisor.DashboardModel
+@{
+    ViewData["Title"] = "Review Proposals";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Review Proposals</h2>
+        <span class="badge bg-success fs-6">
+            @Model.AcceptedCount / @Model.MaxStudents accepted
+        </span>
+    </div>
+
+    @if (Model.AtCapacity)
+    {
+        <div class="alert alert-warning">
+            You have reached your maximum student capacity (@Model.MaxStudents). You cannot accept more proposals.
+        </div>
+    }
+
+    @if (!Model.Proposals.Any())
+    {
+        <p class="text-muted">No submitted proposals available for review at this time.</p>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            @foreach (var proposal in Model.Proposals)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@proposal.Title</h5>
+                            <p class="card-text text-muted small mb-3">
+                                Submitted: @proposal.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")
+                            </p>
+                            <p class="card-text">@proposal.Description</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            @if (Model.AtCapacity)
+                            {
+                                <button class="btn btn-success w-100" disabled>At Capacity</button>
+                            }
+                            else
+                            {
+                                <form method="post">
+                                    <input type="hidden" name="proposalId" value="@proposal.Id" />
+                                    <button type="submit" class="btn btn-success w-100">Express Interest</button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="mt-4">
+        <a asp-page="/Supervisor/AcceptedProposals" class="btn btn-outline-success">
+            View Accepted Proposals
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
