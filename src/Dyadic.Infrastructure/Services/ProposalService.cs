@@ -90,6 +90,9 @@ public class ProposalService : IProposalService
         var proposal = await _db.Proposals.FindAsync(proposalId)
             ?? throw new InvalidOperationException("Proposal not found.");
 
+        if (proposal.Status != ProposalStatus.Submitted)
+            throw new InvalidOperationException("Only submitted proposals can be accepted.");
+
         var supervisor = await _db.SupervisorProfiles
             .Include(sp => sp.AcceptedProposals)
             .FirstOrDefaultAsync(sp => sp.Id == supervisorProfileId)
@@ -107,7 +110,7 @@ public class ProposalService : IProposalService
     public async Task<List<Proposal>> GetAcceptedBySupervisorAsync(Guid supervisorProfileId)
     {
         return await _db.Proposals
-            .Where(p => p.SupervisorId == supervisorProfileId)
+            .Where(p => p.SupervisorId == supervisorProfileId && p.Status == ProposalStatus.Accepted)
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
     }
