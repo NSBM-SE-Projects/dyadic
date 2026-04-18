@@ -58,13 +58,14 @@
             const input = document.getElementById(inputId);
             const count = document.getElementById(countId);
             if (input && count) {
-                count.textContent = max - input.value.length;
-                input.addEventListener('input', () => {
-                    count.textContent = max - input.value.length;
-                });
+                const refresh = () => { count.textContent = max - input.value.length; };
+                refresh();
+                input.addEventListener('input', refresh);
             }
         }
-        updateCount('titleInput', 'titleCount', 200);
-        updateCount('descInput', 'descCount', 2000);
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCount('titleInput', 'titleCount', 200);
+            updateCount('descInput', 'descCount', 2000);
+        });
     </script>
 }

@@ -1,0 +1,53 @@
+@page
+@model Dyadic.Web.Pages.Supervisor.AcceptedProposalsModel
+@{
+    ViewData["Title"] = "Accepted Proposals";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Accepted Proposals</h2>
+        <a asp-page="/Supervisor/Dashboard" class="btn btn-outline-success">Back to Review</a>
+    </div>
+
+    @if (!Model.Proposals.Any())
+    {
+        <p class="text-muted">You have not accepted any proposals yet.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-success">
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var proposal in Model.Proposals)
+                    {
+                        <tr>
+                            <td>@proposal.Title</td>
+                            <td class="text-muted small">@proposal.Description</td>
+                            <td>@proposal.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+                            <td>
+                                @{
+                                    var (badgeClass, badgeText) = proposal.Status.ToString() switch
+                                    {
+                                        "Accepted"  => ("bg-success", "Accepted"),
+                                        "Finalized" => ("bg-dark", "Finalized"),
+                                        _           => ("bg-secondary", proposal.Status.ToString())
+                                    };
+                                }
+                                <span class="badge @badgeClass">@badgeText</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

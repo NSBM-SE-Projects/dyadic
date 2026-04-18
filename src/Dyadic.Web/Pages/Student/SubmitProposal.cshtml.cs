@@ -35,10 +35,10 @@ public class SubmitProposalModel : PageModel
         public string Description { get; set; } = string.Empty;
     }
 
-    public async Task OnGetAsync()
+    public async Task<IActionResult> OnGetAsync()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null) return;
+        if (user == null) return Forbid();
 
         var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
         var proposal = await _proposalService.GetByStudentIdAsync(profile.Id);
@@ -51,11 +51,10 @@ public class SubmitProposalModel : PageModel
             IsLocked = proposal.Status == ProposalStatus.Accepted || proposal.Status == ProposalStatus.Finalized;
 
             if (IsLocked)
-            {
-                Response.Redirect("/Student/MyProposal");
-                return;
-            }
+                return RedirectToPage("/Student/MyProposal");
         }
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPostDraftAsync()
