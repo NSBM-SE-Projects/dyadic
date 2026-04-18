@@ -2,6 +2,7 @@ using Dyadic.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Dyadic.Infrastructure.Data;
 
@@ -27,6 +28,11 @@ public static class AdminSeeder {
 
         if (result.Succeeded) {
             await userManager.AddToRoleAsync(admin, "Admin");
+        }
+        else {
+            var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("AdminSeeder");
+            foreach (var error in result.Errors)
+                logger.LogWarning("Admin seed failed: {Error}", error.Description);
         }
     }
 }
