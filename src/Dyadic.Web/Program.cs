@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Dyadic.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Dyadic.Infrastructure.Data;
+using Dyadic.Application.Services;
+using Dyadic.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,13 +29,15 @@ builder.Services.ConfigureApplicationCookie(options => {
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
+builder.Services.AddScoped<IProposalService, ProposalService>();
+
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 using (var scope = app.Services.CreateScope()) {
     await DataSeeder.SeedAsync(scope.ServiceProvider);
 }
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
