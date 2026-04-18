@@ -26,13 +26,19 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="mb-3">
-                    <label asp-for="Input.Title" class="form-label fw-semibold"></label>
-                    <input asp-for="Input.Title" class="form-control form-control-lg" maxlength="200" />
+                    <div class="d-flex justify-content-between">
+                        <label asp-for="Input.Title" class="form-label fw-semibold"></label>
+                        <small class="text-muted"><span id="titleCount">200</span> characters remaining</small>
+                    </div>
+                    <input asp-for="Input.Title" class="form-control form-control-lg" maxlength="200" id="titleInput" />
                     <span asp-validation-for="Input.Title" class="text-danger small"></span>
                 </div>
                 <div class="mb-4">
-                    <label asp-for="Input.Description" class="form-label fw-semibold"></label>
-                    <textarea asp-for="Input.Description" class="form-control" rows="8" maxlength="2000"></textarea>
+                    <div class="d-flex justify-content-between">
+                        <label asp-for="Input.Description" class="form-label fw-semibold"></label>
+                        <small class="text-muted"><span id="descCount">2000</span> characters remaining</small>
+                    </div>
+                    <textarea asp-for="Input.Description" class="form-control" rows="8" maxlength="2000" id="descInput"></textarea>
                     <span asp-validation-for="Input.Description" class="text-danger small"></span>
                 </div>
 
@@ -47,4 +53,18 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function updateCount(inputId, countId, max) {
+            const input = document.getElementById(inputId);
+            const count = document.getElementById(countId);
+            if (input && count) {
+                count.textContent = max - input.value.length;
+                input.addEventListener('input', () => {
+                    count.textContent = max - input.value.length;
+                });
+            }
+        }
+        updateCount('titleInput', 'titleCount', 200);
+        updateCount('descInput', 'descCount', 2000);
+    </script>
 }
