@@ -32,6 +32,12 @@
                                 <a class="nav-link text-white" asp-page="/Student/MyProposal">My Proposal</a>
                             </li>
                         }
+                        else if (SignInManager.IsSignedIn(User) && User.IsInRole("Supervisor"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-page="/Supervisor/Dashboard">Review Proposals</a>
+                            </li>
+                        }
                         else if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
