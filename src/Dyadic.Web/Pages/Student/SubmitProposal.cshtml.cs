@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dyadic.Web.Pages.Student;
 
@@ -39,7 +40,7 @@ public class SubmitProposalModel : PageModel
 
     private async Task<StudentProfile> GetOrCreateStudentProfileAsync(ApplicationUser user)
     {
-        var profile = await _db.StudentProfiles.FindAsync(user.Id);
+        var profile = await _db.StudentProfiles.FirstOrDefaultAsync(sp => sp.UserId == user.Id);
         if (profile == null)
         {
             profile = new StudentProfile

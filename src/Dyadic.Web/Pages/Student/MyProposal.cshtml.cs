@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dyadic.Web.Pages.Student;
 
@@ -28,7 +29,7 @@ public class MyProposalModel : PageModel
         var user = await _userManager.GetUserAsync(User);
         if (user == null) return Forbid();
 
-        var profile = await _db.StudentProfiles.FindAsync(user.Id);
+        var profile = await _db.StudentProfiles.FirstOrDefaultAsync(sp => sp.UserId == user.Id);
         if (profile == null)
             return RedirectToPage("/Student/SubmitProposal");
 
