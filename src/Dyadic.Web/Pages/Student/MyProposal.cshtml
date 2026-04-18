@@ -91,6 +91,11 @@
                     <dd class="col-sm-9">@Model.Proposal.Supervisor.User.Email</dd>
                     <dt class="col-sm-3">Department</dt>
                     <dd class="col-sm-9">@Model.Proposal.Supervisor.Department</dd>
+                    @if (!string.IsNullOrWhiteSpace(Model.Proposal.Supervisor.ResearchAreas))
+                    {
+                        <dt class="col-sm-3">Research Areas</dt>
+                        <dd class="col-sm-9">@Model.Proposal.Supervisor.ResearchAreas</dd>
+                    }
                 </dl>
             }
             else
