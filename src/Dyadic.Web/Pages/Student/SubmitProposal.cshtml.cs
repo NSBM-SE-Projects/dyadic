@@ -25,7 +25,7 @@ public class SubmitProposalModel : PageModel
     public InputModel Input { get; set; } = new();
 
     public bool IsSubmitted { get; set; }
-
+    public bool IsLocked { get; set; }
     public class InputModel
     {
         [Required, MaxLength(200)]
@@ -35,10 +35,10 @@ public class SubmitProposalModel : PageModel
         public string Description { get; set; } = string.Empty;
     }
 
-    public async Task OnGetAsync()
+    public async Task<IActionResult> OnGetAsync()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null) return;
+        if (user == null) return Forbid();
 
         var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
         var proposal = await _proposalService.GetByStudentIdAsync(profile.Id);
@@ -47,8 +47,14 @@ public class SubmitProposalModel : PageModel
         {
             Input.Title = proposal.Title;
             Input.Description = proposal.Description;
-            IsSubmitted = proposal.Status != ProposalStatus.Draft;
+            IsSubmitted = proposal.Status == ProposalStatus.Submitted;
+            IsLocked = proposal.Status == ProposalStatus.Accepted || proposal.Status == ProposalStatus.Finalized;
+
+            if (IsLocked)
+                return RedirectToPage("/Student/MyProposal");
         }
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPostDraftAsync()
