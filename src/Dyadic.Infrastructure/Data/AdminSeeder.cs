@@ -9,7 +9,7 @@ public static class AdminSeeder {
     public static async Task SeedAdminAsync(IServiceProvider serviceProvider) {
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-        const string adminEmail = "admin@dyadic.lk";
+        const string adminEmail = "admin@dyadic.local";
 
         if (await userManager.FindByEmailAsync(adminEmail) != null)
             return;
@@ -22,7 +22,7 @@ public static class AdminSeeder {
         };
 
         var config = serviceProvider.GetRequiredService<IConfiguration>();
-        var password = config["SeedAdmin:Password"] ?? "Admin123456";
+        var password = config["SeedAdmin:Password"] ?? "Admin@123456";
         var result = await userManager.CreateAsync(admin, password);
 
         if (result.Succeeded) {
