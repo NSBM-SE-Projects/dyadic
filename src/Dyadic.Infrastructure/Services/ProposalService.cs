@@ -76,8 +76,17 @@ public class ProposalService : IProposalService
 
     public async Task<Proposal?> GetByStudentIdAsync(Guid studentProfileId)
     {
-        return await _db.Proposals
+        var proposal = await _db.Proposals
             .FirstOrDefaultAsync(p => p.StudentId == studentProfileId);
+
+        if (proposal?.Status == ProposalStatus.Finalized)
+            await _db.Entry(proposal)
+                .Reference(p => p.Supervisor)
+                .Query()
+                .Include(sp => sp.User)
+                .LoadAsync();
+
+        return proposal;
     }
 
     public async Task<Proposal> WithdrawAsync(Guid proposalId, Guid studentProfileId)
@@ -128,9 +137,52 @@ public class ProposalService : IProposalService
 
     public async Task<List<Proposal>> GetAcceptedBySupervisorAsync(Guid supervisorProfileId)
     {
-        return await _db.Proposals
-            .Where(p => p.SupervisorId == supervisorProfileId && p.Status == ProposalStatus.Accepted)
+        var proposals = await _db.Proposals
+            .Where(p => p.SupervisorId == supervisorProfileId &&
+                        (p.Status == ProposalStatus.Accepted || p.Status == ProposalStatus.Finalized))
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
+
+        foreach (var proposal in proposals.Where(p => p.Status == ProposalStatus.Finalized))
+            await _db.Entry(proposal)
+                .Reference(p => p.Student)
+                .Query()
+                .Include(sp => sp.User)
+                .LoadAsync();
+
+        return proposals;
+    }
+
+    public async Task<Proposal> ConfirmMatchAsync(Guid proposalId, Guid studentProfileId)
+    {
+        var proposal = await _db.Proposals.FindAsync(proposalId)
+            ?? throw new InvalidOperationException("Proposal not found.");
+
+        if (proposal.StudentId != studentProfileId)
+            throw new InvalidOperationException("You do not own this proposal.");
+
+        if (proposal.Status != ProposalStatus.Accepted)
+            throw new InvalidOperationException("Only accepted proposals can be confirmed.");
+
+        proposal.Status = ProposalStatus.Finalized;
+        await _db.SaveChangesAsync();
+        return proposal;
+    }
+
+    public async Task<Proposal> RejectMatchAsync(Guid proposalId, Guid studentProfileId)
+    {
+        var proposal = await _db.Proposals.FindAsync(proposalId)
+            ?? throw new InvalidOperationException("Proposal not found.");
+
+        if (proposal.StudentId != studentProfileId)
+            throw new InvalidOperationException("You do not own this proposal.");
+
+        if (proposal.Status != ProposalStatus.Accepted)
+            throw new InvalidOperationException("Only accepted proposals can be rejected.");
+
+        proposal.Status = ProposalStatus.Submitted;
+        proposal.SupervisorId = null;
+        await _db.SaveChangesAsync();
+        return proposal;
     }
 }

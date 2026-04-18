@@ -24,6 +24,7 @@
                         <th>Description</th>
                         <th>Date</th>
                         <th>Status</th>
+                        <th>Student</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,6 +44,18 @@
                                     };
                                 }
                                 <span class="badge @badgeClass">@badgeText</span>
+                            </td>
+                            <td>
+                                @if (proposal.Status == Dyadic.Domain.Enums.ProposalStatus.Finalized)
+                                {
+                                    <div>@proposal.Student.User.FullName</div>
+                                    <div class="text-muted small">@proposal.Student.User.Email</div>
+                                    <div class="text-muted small">@proposal.Student.IndexNumber — @proposal.Student.Batch</div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Waiting for student confirmation</span>
+                                }
                             </td>
                         </tr>
                     }

@@ -60,4 +60,46 @@ public class MyProposalModel : PageModel
 
         return RedirectToPage("/Student/MyProposal");
     }
+
+    public async Task<IActionResult> OnPostConfirmAsync(Guid proposalId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Forbid();
+
+        var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
+
+        try
+        {
+            await _proposalService.ConfirmMatchAsync(proposalId, profile.Id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            Proposal = await _proposalService.GetByStudentIdAsync(profile.Id);
+            return Page();
+        }
+
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostRejectAsync(Guid proposalId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Forbid();
+
+        var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
+
+        try
+        {
+            await _proposalService.RejectMatchAsync(proposalId, profile.Id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            Proposal = await _proposalService.GetByStudentIdAsync(profile.Id);
+            return Page();
+        }
+
+        return RedirectToPage();
+    }
 }

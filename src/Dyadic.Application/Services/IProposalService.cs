@@ -13,4 +13,6 @@ public interface IProposalService
     Task<List<Proposal>> GetSubmittedProposalsAsync();
     Task<Proposal> AcceptProposalAsync(Guid proposalId, Guid supervisorProfileId);
     Task<List<Proposal>> GetAcceptedBySupervisorAsync(Guid supervisorProfileId);
+    Task<Proposal> ConfirmMatchAsync(Guid proposalId, Guid studentProfileId);
+    Task<Proposal> RejectMatchAsync(Guid proposalId, Guid studentProfileId);
 }
