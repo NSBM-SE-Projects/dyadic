@@ -76,4 +76,42 @@ public class ProposalService : IProposalService
         return await _db.Proposals
             .FirstOrDefaultAsync(p => p.StudentId == studentProfileId);
     }
+
+    public async Task<List<Proposal>> GetSubmittedProposalsAsync()
+    {
+        return await _db.Proposals
+            .Where(p => p.Status == ProposalStatus.Submitted)
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync();
+    }
+
+    public async Task<Proposal> AcceptProposalAsync(Guid proposalId, Guid supervisorProfileId)
+    {
+        var proposal = await _db.Proposals.FindAsync(proposalId)
+            ?? throw new InvalidOperationException("Proposal not found.");
+
+        if (proposal.Status != ProposalStatus.Submitted)
+            throw new InvalidOperationException("Only submitted proposals can be accepted.");
+
+        var supervisor = await _db.SupervisorProfiles
+            .Include(sp => sp.AcceptedProposals)
+            .FirstOrDefaultAsync(sp => sp.Id == supervisorProfileId)
+            ?? throw new InvalidOperationException("Supervisor profile not found.");
+
+        if (supervisor.AcceptedProposals.Count >= supervisor.MaxStudents)
+            throw new InvalidOperationException("You have reached your maximum student capacity.");
+
+        proposal.SupervisorId = supervisorProfileId;
+        proposal.Status = ProposalStatus.Accepted;
+        await _db.SaveChangesAsync();
+        return proposal;
+    }
+
+    public async Task<List<Proposal>> GetAcceptedBySupervisorAsync(Guid supervisorProfileId)
+    {
+        return await _db.Proposals
+            .Where(p => p.SupervisorId == supervisorProfileId && p.Status == ProposalStatus.Accepted)
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync();
+    }
 }
