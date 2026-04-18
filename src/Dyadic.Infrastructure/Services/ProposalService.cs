@@ -76,9 +76,17 @@ public class ProposalService : IProposalService
 
     public async Task<Proposal?> GetByStudentIdAsync(Guid studentProfileId)
     {
-        return await _db.Proposals
-            .Include(p => p.Supervisor).ThenInclude(sp => sp!.User)
+        var proposal = await _db.Proposals
             .FirstOrDefaultAsync(p => p.StudentId == studentProfileId);
+
+        if (proposal?.Status == ProposalStatus.Finalized)
+            await _db.Entry(proposal)
+                .Reference(p => p.Supervisor)
+                .Query()
+                .Include(sp => sp.User)
+                .LoadAsync();
+
+        return proposal;
     }
 
     public async Task<Proposal> WithdrawAsync(Guid proposalId, Guid studentProfileId)
@@ -129,12 +137,20 @@ public class ProposalService : IProposalService
 
     public async Task<List<Proposal>> GetAcceptedBySupervisorAsync(Guid supervisorProfileId)
     {
-        return await _db.Proposals
-            .Include(p => p.Student).ThenInclude(sp => sp.User)
+        var proposals = await _db.Proposals
             .Where(p => p.SupervisorId == supervisorProfileId &&
                         (p.Status == ProposalStatus.Accepted || p.Status == ProposalStatus.Finalized))
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
+
+        foreach (var proposal in proposals.Where(p => p.Status == ProposalStatus.Finalized))
+            await _db.Entry(proposal)
+                .Reference(p => p.Student)
+                .Query()
+                .Include(sp => sp.User)
+                .LoadAsync();
+
+        return proposals;
     }
 
     public async Task<Proposal> ConfirmMatchAsync(Guid proposalId, Guid studentProfileId)
