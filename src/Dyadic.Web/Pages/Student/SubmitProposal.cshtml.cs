@@ -83,6 +83,8 @@ public class SubmitProposalModel : PageModel
 
         if (existing == null)
             await _proposalService.CreateDraftAsync(profile.Id, Input.Title, Input.Description);
+        else
+            await _proposalService.UpdateDraftAsync(existing.Id, Input.Title, Input.Description);
 
         return RedirectToPage("/Student/MyProposal");
     }

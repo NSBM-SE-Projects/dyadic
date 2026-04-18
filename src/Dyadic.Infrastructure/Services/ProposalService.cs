@@ -30,6 +30,17 @@ public class ProposalService : IProposalService
         return proposal;
     }
 
+    public async Task<Proposal> UpdateDraftAsync(Guid proposalId, string title, string description)
+    {
+        var proposal = await _db.Proposals.FindAsync(proposalId)
+            ?? throw new InvalidOperationException("Proposal not found.");
+
+        proposal.Title = title;
+        proposal.Description = description;
+        await _db.SaveChangesAsync();
+        return proposal;
+    }
+
     public async Task<Proposal> SubmitAsync(Guid proposalId)
     {
         var proposal = await _db.Proposals.FindAsync(proposalId)
