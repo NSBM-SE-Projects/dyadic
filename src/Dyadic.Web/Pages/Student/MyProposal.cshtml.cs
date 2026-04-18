@@ -37,4 +37,24 @@ public class MyProposalModel : PageModel
 
         return Page();
     }
+
+    public async Task<IActionResult> OnPostConfirmAsync(Guid proposalId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Forbid();
+
+        var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
+        await _proposalService.ConfirmMatchAsync(proposalId, profile.Id);
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostRejectAsync(Guid proposalId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Forbid();
+
+        var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
+        await _proposalService.RejectMatchAsync(proposalId, profile.Id);
+        return RedirectToPage();
+    }
 }
