@@ -11,18 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-    mssql:
-      image: mcr.microsoft.com/mssql/server:2022-latest
-      env:
-        ACCEPT_EULA: "Y"
-        MSSQL_SA_PASSWORD: "CiTestPassword1!"
-      ports:
-        - 1433:1433
-      options: >-
-        --health-cmd "opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P CiTestPassword1! -C -Q 'SELECT 1" 
-          --health-interval 10s 
-          --health-timeout 5s 
-          --health-retries 5
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: "CiTestPassword1!"
+        ports:
+          - 1433:1433
+        options: --health-cmd "sleep 1 && exit 0" --health-interval 10s --health-timeout 5s --health-retries 10 --health-start-period 30s
     
     steps:
       - uses: actions/checkout@v4
@@ -42,8 +38,6 @@ jobs:
         run: dotnet test tests/Dyadic.UnitTests --no-build --verbosity normal
 
       - name: Run Integration Tests
-        run: dotnet tests tests/Dyadic.IntegrationTests --no-build --verbosity normal
+        run: dotnet test tests/Dyadic.IntegrationTests --no-build --verbosity normal
         env:
           ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=Dyadic_CI;User Id=sa;Password=CiTestPassword1!;TrustServerCertificate=True"
-
-      
