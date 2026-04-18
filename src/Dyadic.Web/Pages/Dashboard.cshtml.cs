@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+  using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Dyadic.Web.Pages;
-[Authorize]
-public class DashboardModel : PageModel
-{
-    public void OnGet() { }
-}
+  namespace Dyadic.Web.Pages;
+
+  [Authorize]
+  public class DashboardModel : PageModel
+  {
+      public void OnGet() { }
+  }
