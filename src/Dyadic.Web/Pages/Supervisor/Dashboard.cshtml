@@ -1,0 +1,35 @@
+@page
+@model Dyadic.Web.Pages.Supervisor.DashboardModel
+@{
+    ViewData["Title"] = "Review Proposals";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Review Proposals</h2>
+        <span class="badge bg-success fs-6">
+            @Model.AcceptedCount / @Model.MaxStudents accepted
+        </span>
+    </div>
+
+    <div class="card mb-4 border-success">
+        <div class="card-body">
+            <h6 class="card-title text-success mb-1">Your Expertise</h6>
+            <p class="mb-1"><strong>Department:</strong> @Model.Department</p>
+            @if (!string.IsNullOrWhiteSpace(Model.ResearchAreas))
+            {
+                <p class="mb-0"><strong>Research Areas:</strong> @Model.ResearchAreas</p>
+            }
+            else
+            {
+                <p class="mb-0 text-muted"><em>No research areas set. <a asp-page="/Supervisor/Profile">Update your profile.</a></em></p>
+            }
+        </div>
+    </div>
+
+    <p class="text-muted">Proposal review functionality is coming soon.</p>
+
+    <div class="mt-4">
+        <a asp-page="/Supervisor/Profile" class="btn btn-outline-success">Edit My Profile</a>
+    </div>
+</div>
