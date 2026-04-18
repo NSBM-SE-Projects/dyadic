@@ -30,6 +30,7 @@ builder.Services.ConfigureApplicationCookie(options => {
 });
 
 builder.Services.AddScoped<IProposalService, ProposalService>();
+builder.Services.AddScoped<ISupervisorProfileService, SupervisorProfileService>();
 
 var app = builder.Build();
 
