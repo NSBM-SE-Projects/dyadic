@@ -1,0 +1,55 @@
+@page
+@model Dyadic.Web.Pages.Admin.SupervisorsModel
+@{
+    ViewData["Title"] = "Supervisor Capacity";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Supervisor Capacity</h2>
+        <a asp-page="/Admin/Dashboard" class="btn btn-outline-success">Back to Dashboard</a>
+    </div>
+
+    @if (!Model.Supervisors.Any())
+    {
+        <p class="text-muted">No supervisors registered yet.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-success">
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Research Areas</th>
+                        <th>Capacity</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var supervisor in Model.Supervisors)
+                    {
+                        var atCapacity = supervisor.AcceptedProposals.Count >= supervisor.MaxStudents;
+                        <tr>
+                            <td>@supervisor.User.FullName</td>
+                            <td>@supervisor.Department</td>
+                            <td>@(string.IsNullOrWhiteSpace(supervisor.ResearchAreas) ? "—" : supervisor.ResearchAreas)</td>
+                            <td>@supervisor.AcceptedProposals.Count / @supervisor.MaxStudents</td>
+                            <td>
+                                @if (atCapacity)
+                                {
+                                    <span class="badge bg-danger">At Capacity</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Available</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
