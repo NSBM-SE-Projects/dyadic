@@ -47,7 +47,7 @@ public class ProposalService : IProposalService
             ?? throw new InvalidOperationException("Proposal not found.");
 
         if (proposal.Status != ProposalStatus.Draft)
-            throw new InvalidOperationException("Only draft proposal can be submited.");
+            throw new InvalidOperationException("Only draft proposals can be submitted.");
 
         proposal.Status = ProposalStatus.Submitted;
         await _db.SaveChangesAsync();
