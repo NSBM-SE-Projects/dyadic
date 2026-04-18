@@ -12,6 +12,21 @@
         </span>
     </div>
 
+    <div class="card mb-4 border-success">
+        <div class="card-body">
+            <h6 class="card-title text-success mb-1">Your Expertise</h6>
+            <p class="mb-1"><strong>Department:</strong> @Model.Department</p>
+            @if (!string.IsNullOrWhiteSpace(Model.ResearchAreas))
+            {
+                <p class="mb-0"><strong>Research Areas:</strong> @Model.ResearchAreas</p>
+            }
+            else
+            {
+                <p class="mb-0 text-muted"><em>No research areas set. <a asp-page="/Supervisor/Profile">Update your profile.</a></em></p>
+            }
+        </div>
+    </div>
+
     @if (Model.AtCapacity)
     {
         <div class="alert alert-warning">

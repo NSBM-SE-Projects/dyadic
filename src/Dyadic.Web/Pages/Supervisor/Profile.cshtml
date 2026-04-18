@@ -1,0 +1,43 @@
+@page
+@model Dyadic.Web.Pages.Supervisor.ProfileModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">My Profile</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <form method="post">
+        <div class="mb-3">
+            <label asp-for="Department" class="form-label">Department</label>
+            <input asp-for="Department" class="form-control" />
+            <span asp-validation-for="Department" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ResearchAreas" class="form-label">Research Areas</label>
+            <textarea asp-for="ResearchAreas" class="form-control" rows="3"
+                      placeholder="e.g. Machine Learning, Data Science, Cloud Computing"></textarea>
+            <div class="form-text">Enter as comma-separated values.</div>
+            <span asp-validation-for="ResearchAreas" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MaxStudents" class="form-label">Maximum Students</label>
+            <input asp-for="MaxStudents" type="number" class="form-control" min="1" max="10" />
+            <div class="form-text">You have accepted @Model.AcceptedCount of @Model.MaxStudents students.</div>
+            <span asp-validation-for="MaxStudents" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Profile</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
