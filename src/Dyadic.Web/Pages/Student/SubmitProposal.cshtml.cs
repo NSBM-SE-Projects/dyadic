@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace Dyadic.Web.Pages.Student;
 
@@ -15,13 +14,11 @@ public class SubmitProposalModel : PageModel
 {
     private readonly IProposalService _proposalService;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly Infrastructure.ApplicationDbContext _db;
 
-    public SubmitProposalModel(IProposalService proposalService, UserManager<ApplicationUser> userManager, Infrastructure.ApplicationDbContext db)
+    public SubmitProposalModel(IProposalService proposalService, UserManager<ApplicationUser> userManager)
     {
         _proposalService = proposalService;
         _userManager = userManager;
-        _db = db;
     }
 
     [BindProperty]
@@ -38,29 +35,12 @@ public class SubmitProposalModel : PageModel
         public string Description { get; set; } = string.Empty;
     }
 
-    private async Task<StudentProfile> GetOrCreateStudentProfileAsync(ApplicationUser user)
-    {
-        var profile = await _db.StudentProfiles.FirstOrDefaultAsync(sp => sp.UserId == user.Id);
-        if (profile == null)
-        {
-            profile = new StudentProfile
-            {
-                UserId = user.Id,
-                IndexNumber = "N/A",
-                Batch = "N/A"
-            };
-            _db.StudentProfiles.Add(profile);
-            await _db.SaveChangesAsync();
-        }
-        return profile;
-    }
-
     public async Task OnGetAsync()
     {
         var user = await _userManager.GetUserAsync(User);
         if (user == null) return;
 
-        var profile = await GetOrCreateStudentProfileAsync(user);
+        var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
         var proposal = await _proposalService.GetByStudentIdAsync(profile.Id);
 
         if (proposal != null)
@@ -78,7 +58,7 @@ public class SubmitProposalModel : PageModel
         var user = await _userManager.GetUserAsync(User);
         if (user == null) return Forbid();
 
-        var profile = await GetOrCreateStudentProfileAsync(user);
+        var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
         var existing = await _proposalService.GetByStudentIdAsync(profile.Id);
 
         if (existing == null)
@@ -96,7 +76,7 @@ public class SubmitProposalModel : PageModel
         var user = await _userManager.GetUserAsync(User);
         if (user == null) return Forbid();
 
-        var profile = await GetOrCreateStudentProfileAsync(user);
+        var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
         var existing = await _proposalService.GetByStudentIdAsync(profile.Id);
 
         if (existing == null)

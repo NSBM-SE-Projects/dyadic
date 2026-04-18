@@ -14,6 +14,23 @@ public class ProposalService : IProposalService
         _db = db;
     }
 
+    public async Task<StudentProfile> GetOrCreateStudentProfileAsync(Guid userId)
+    {
+        var profile = await _db.StudentProfiles.FirstOrDefaultAsync(sp => sp.UserId == userId);
+        if (profile == null)
+        {
+            profile = new StudentProfile
+            {
+                UserId = userId,
+                IndexNumber = "N/A",
+                Batch = "N/A"
+            };
+            _db.StudentProfiles.Add(profile);
+            await _db.SaveChangesAsync();
+        }
+        return profile;
+    }
+
     public async Task<Proposal> CreateDraftAsync(Guid studentProfileId, string title, string description)
     {
         var proposal = new Proposal
