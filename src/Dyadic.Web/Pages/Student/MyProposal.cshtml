@@ -39,9 +39,28 @@
                 <dd class="col-sm-9">@Model.Proposal.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</dd>
             </dl>
 
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
             @if (Model.Proposal.Status == Dyadic.Domain.Enums.ProposalStatus.Draft)
             {
-                <a asp-page="/Student/SubmitProposal" class="btn btn-outline-secondary">Edit Draft</a>
+                <div class="d-flex gap-2">
+                    <a asp-page="/Student/SubmitProposal" class="btn btn-outline-secondary">Edit Draft</a>
+                    <a asp-page="/Student/SubmitProposal" class="btn btn-success">Submit Proposal</a>
+                </div>
+            }
+            else if (Model.Proposal.Status == Dyadic.Domain.Enums.ProposalStatus.Submitted)
+            {
+                <form method="post">
+                    <button type="submit" asp-page-handler="Withdraw"
+                            class="btn btn-outline-danger"
+                            onclick="return confirm('Are you sure you want to withdraw your proposal? It will return to Draft status.')">
+                        Withdraw Proposal
+                    </button>
+                </form>
+            }
+            else
+            {
+                <p class="text-muted fst-italic">This proposal is locked and cannot be edited.</p>
             }
         }
     </div>

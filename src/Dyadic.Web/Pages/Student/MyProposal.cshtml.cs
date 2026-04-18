@@ -37,4 +37,27 @@ public class MyProposalModel : PageModel
 
         return Page();
     }
+
+    public async Task<IActionResult> OnPostWithdrawAsync()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Forbid();
+
+        var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
+        var proposal = await _proposalService.GetByStudentIdAsync(profile.Id);
+        if (proposal == null) return RedirectToPage("/Student/SubmitProposal");
+
+        try
+        {
+            await _proposalService.WithdrawAsync(proposal.Id, profile.Id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            Proposal = proposal;
+            return Page();
+        }
+
+        return RedirectToPage("/Student/MyProposal");
+    }
 }

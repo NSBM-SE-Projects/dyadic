@@ -52,6 +52,9 @@ public class ProposalService : IProposalService
         var proposal = await _db.Proposals.FindAsync(proposalId)
             ?? throw new InvalidOperationException("Proposal not found.");
 
+        if (proposal.Status != ProposalStatus.Draft)
+            throw new InvalidOperationException("Only draft proposals can be edited.");
+
         proposal.Title = title;
         proposal.Description = description;
         await _db.SaveChangesAsync();
@@ -75,6 +78,22 @@ public class ProposalService : IProposalService
     {
         return await _db.Proposals
             .FirstOrDefaultAsync(p => p.StudentId == studentProfileId);
+    }
+
+    public async Task<Proposal> WithdrawAsync(Guid proposalId, Guid studentProfileId)
+    {
+        var proposal = await _db.Proposals.FindAsync(proposalId)
+            ?? throw new InvalidOperationException("Proposal not found.");
+
+        if (proposal.StudentId != studentProfileId)
+            throw new InvalidOperationException("You do not own this proposal.");
+
+        if (proposal.Status != ProposalStatus.Submitted)
+            throw new InvalidOperationException("Only submitted proposals can be withdrawn.");
+
+        proposal.Status = ProposalStatus.Draft;
+        await _db.SaveChangesAsync();
+        return proposal;
     }
 
     public async Task<List<Proposal>> GetSubmittedProposalsAsync()
