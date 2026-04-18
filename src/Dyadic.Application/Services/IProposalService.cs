@@ -9,4 +9,7 @@ public interface IProposalService
     Task<Proposal> UpdateDraftAsync(Guid proposalId, string title, string description);
     Task<Proposal> SubmitAsync(Guid proposalId);
     Task<Proposal?> GetByStudentIdAsync(Guid studentProfileId);
+    Task<List<Proposal>> GetSubmittedProposalsAsync();
+    Task<Proposal> AcceptProposalAsync(Guid proposalId, Guid supervisorProfileId);
+    Task<List<Proposal>> GetAcceptedBySupervisorAsync(Guid supervisorProfileId);
 }
