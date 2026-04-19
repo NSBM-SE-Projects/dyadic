@@ -27,6 +27,7 @@
     <ProjectReference Include="..\..\src\Dyadic.Application\Dyadic.Application.csproj" />
     <ProjectReference Include="..\..\src\Dyadic.Domain\Dyadic.Domain.csproj" />
     <ProjectReference Include="..\..\src\Dyadic.Infrastructure\Dyadic.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Dyadic.Web\Dyadic.Web.csproj" />
   </ItemGroup>
 
 </Project>
