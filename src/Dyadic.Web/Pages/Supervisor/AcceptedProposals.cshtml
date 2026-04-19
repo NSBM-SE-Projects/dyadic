@@ -21,7 +21,7 @@
                 <thead class="table-success">
                     <tr>
                         <th>Title</th>
-                        <th>Description</th>
+                        <th>Abstract</th>
                         <th>Date</th>
                         <th>Status</th>
                         <th>Student</th>
@@ -32,7 +32,7 @@
                     {
                         <tr>
                             <td>@proposal.Title</td>
-                            <td class="text-muted small">@proposal.Description</td>
+                            <td class="text-muted small">@proposal.Abstract</td>
                             <td>@proposal.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
                             <td>
                                 @{

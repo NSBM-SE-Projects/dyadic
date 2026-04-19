@@ -83,6 +83,7 @@
                     <tr>
                         <th>Student</th>
                         <th>Title</th>
+                        <th>Research Area</th>
                         <th>Status</th>
                         <th>Supervisor</th>
                         <th>Date</th>
@@ -95,6 +96,7 @@
                         <tr>
                             <td>@proposal.Student.User.FullName</td>
                             <td>@proposal.Title</td>
+                            <td>@(proposal.ResearchArea != null ? proposal.ResearchArea.Name : "—")</td>
                             <td>
                                 @{
                                     var (badgeClass, badgeText) = proposal.Status.ToString() switch

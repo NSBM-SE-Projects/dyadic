@@ -33,8 +33,12 @@
             <dl class="row">
                 <dt class="col-sm-3">Title</dt>
                 <dd class="col-sm-9">@Model.Proposal.Title</dd>
-                <dt class="col-sm-3">Description</dt>
-                <dd class="col-sm-9">@Model.Proposal.Description</dd>
+                <dt class="col-sm-3">Abstract</dt>
+                <dd class="col-sm-9">@Model.Proposal.Abstract</dd>
+                <dt class="col-sm-3">Tech Stack</dt>
+                <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.Proposal.TechStack) ? "—" : Model.Proposal.TechStack)</dd>
+                <dt class="col-sm-3">Research Area</dt>
+                <dd class="col-sm-9">@(Model.Proposal.ResearchArea != null ? Model.Proposal.ResearchArea.Name : "—")</dd>
                 <dt class="col-sm-3">Submitted</dt>
                 <dd class="col-sm-9">@Model.Proposal.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</dd>
             </dl>

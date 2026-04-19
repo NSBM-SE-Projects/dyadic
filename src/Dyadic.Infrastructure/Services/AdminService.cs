@@ -40,6 +40,7 @@ public class AdminService : IAdminService
             .Where(p => includeDrafts || p.Status != ProposalStatus.Draft)
             .Include(p => p.Student).ThenInclude(sp => sp.User)
             .Include(p => p.Supervisor).ThenInclude(sp => sp!.User)
+            .Include(p => p.ResearchArea)
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
     }
