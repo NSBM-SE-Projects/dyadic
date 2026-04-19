@@ -50,7 +50,15 @@
                             <p class="card-text text-muted small mb-3">
                                 Submitted: @proposal.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")
                             </p>
-                            <p class="card-text">@proposal.Description</p>
+                            <p class="card-text">@proposal.Abstract</p>
+                            @if (!string.IsNullOrWhiteSpace(proposal.TechStack))
+                            {
+                                <p class="card-text small text-muted"><strong>Tech Stack:</strong> @proposal.TechStack</p>
+                            }
+                            @if (proposal.ResearchArea != null)
+                            {
+                                <span class="badge bg-success">@proposal.ResearchArea.Name</span>
+                            }
                         </div>
                         <div class="card-footer bg-transparent">
                             @if (Model.AtCapacity)
