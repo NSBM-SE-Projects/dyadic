@@ -1,0 +1,47 @@
+Summary
+  Generated on: 4/19/2026 - 11:07:58 PM
+  Coverage date: 4/19/2026 - 11:06:02 PM - 4/19/2026 - 11:06:08 PM
+  Parser: MultiReport (2x Cobertura)
+  Assemblies: 2
+  Classes: 23
+  Files: 33
+  Line coverage: 83.8%
+  Covered lines: 4695
+  Uncovered lines: 903
+  Coverable lines: 5598
+  Total lines: 6597
+  Branch coverage: 56.5% (69 of 122)
+  Covered branches: 69
+  Total branches: 122
+  Method coverage: 59% (59 of 100)
+  Full method coverage: 52% (52 of 100)
+  Covered methods: 59
+  Fully covered methods: 52
+  Total methods: 100
+
+Dyadic.Application                                                      28.5%
+  Dyadic.Application.DTOs.AuditLogEntry                                    0%
+  Dyadic.Application.DTOs.DashboardStats                                   0%
+  Dyadic.Application.DTOs.UserListItem                                   100%
+
+Dyadic.Infrastructure                                                     84%
+  Dyadic.Infrastructure.ApplicationDbContext                             100%
+  Dyadic.Infrastructure.Data.AdminSeeder                                   0%
+  Dyadic.Infrastructure.Data.DataSeeder                                    0%
+  Dyadic.Infrastructure.Data.RoleSeeder                                  100%
+  Dyadic.Infrastructure.Migrations.AddAllocationOverride                99.1%
+  Dyadic.Infrastructure.Migrations.AddCoreEntities                      96.4%
+  Dyadic.Infrastructure.Migrations.AddOverrideSupervisorNavigations     97.1%
+  Dyadic.Infrastructure.Migrations.AddProposalEvent                     99.3%
+  Dyadic.Infrastructure.Migrations.AddSupervisorResearchAreas           98.7%
+  Dyadic.Infrastructure.Migrations.AddUserIsActive                      99.1%
+  Dyadic.Infrastructure.Migrations.ApplicationDbContextModelSnapshot       0%
+  Dyadic.Infrastructure.Migrations.ExpandProposalFieldsAndTaxonomy        96%
+  Dyadic.Infrastructure.Migrations.Identity                             91.3%
+  Dyadic.Infrastructure.Migrations.InitialCreate                          80%
+  Dyadic.Infrastructure.Migrations.RenameResearchAreaSeedsToFullNames   96.1%
+  Dyadic.Infrastructure.Services.AdminService                           44.2%
+  Dyadic.Infrastructure.Services.ProposalService                        47.7%
+  Dyadic.Infrastructure.Services.ResearchAreaService                    84.8%
+  Dyadic.Infrastructure.Services.SupervisorProfileService                100%
+  Dyadic.Infrastructure.Services.UserAdminService                       98.3%
