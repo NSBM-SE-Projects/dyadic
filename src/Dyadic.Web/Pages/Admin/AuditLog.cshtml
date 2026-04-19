@@ -21,6 +21,8 @@
                         <th>Admin</th>
                         <th>Action</th>
                         <th>Proposal</th>
+                        <th>Old Supervisor</th>
+                        <th>New Supervisor</th>
                         <th>Reason</th>
                     </tr>
                 </thead>
@@ -33,6 +35,8 @@
                             <td>@entry.PerformedBy.FullName</td>
                             <td><span class="badge @actionBadge">@entry.Action</span></td>
                             <td>@entry.Proposal.Title</td>
+                            <td>@(entry.OldSupervisor != null ? entry.OldSupervisor.User.FullName : "—")</td>
+                            <td>@(entry.NewSupervisor != null ? entry.NewSupervisor.User.FullName : "—")</td>
                             <td>@entry.Reason</td>
                         </tr>
                     }
