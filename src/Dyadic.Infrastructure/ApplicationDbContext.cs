@@ -1,4 +1,5 @@
 using Dyadic.Domain.Entities;
+using Dyadic.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -12,6 +13,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<StudentProfile> StudentProfiles => Set<StudentProfile>();
     public DbSet<SupervisorProfile> SupervisorProfiles => Set<SupervisorProfile>();
     public DbSet<Proposal> Proposals => Set<Proposal>();
+    public DbSet<AllocationOverride> AllocationOverrides => Set<AllocationOverride>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
@@ -43,6 +45,24 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         // ProposalStatus as string in DB
         modelBuilder.Entity<Proposal>()
             .Property(p => p.Status)
+            .HasConversion<string>();
+
+        // AllocationOverride FKs
+        modelBuilder.Entity<AllocationOverride>()
+            .HasOne(a => a.Proposal)
+            .WithMany()
+            .HasForeignKey(a => a.ProposalId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<AllocationOverride>()
+            .HasOne(a => a.PerformedBy)
+            .WithMany()
+            .HasForeignKey(a => a.PerformedByUserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // OverrideAction as string in DB
+        modelBuilder.Entity<AllocationOverride>()
+            .Property(a => a.Action)
             .HasConversion<string>();
     }
 }
