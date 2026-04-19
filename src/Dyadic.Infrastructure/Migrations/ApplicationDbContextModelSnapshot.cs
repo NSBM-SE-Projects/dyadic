@@ -22,6 +22,48 @@ namespace Dyadic.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Dyadic.Domain.Entities.AllocationOverride", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("NewSupervisorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("OldSupervisorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PerformedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProposalId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NewSupervisorId");
+
+                    b.HasIndex("OldSupervisorId");
+
+                    b.HasIndex("PerformedByUserId");
+
+                    b.HasIndex("ProposalId");
+
+                    b.ToTable("AllocationOverrides");
+                });
+
             modelBuilder.Entity("Dyadic.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -138,7 +180,40 @@ namespace Dyadic.Infrastructure.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("Proposals", (string)null);
+                    b.ToTable("Proposals");
+                });
+
+            modelBuilder.Entity("Dyadic.Domain.Entities.ProposalEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ActorUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProposalId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("RelatedSupervisorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActorUserId");
+
+                    b.HasIndex("ProposalId");
+
+                    b.HasIndex("RelatedSupervisorId");
+
+                    b.ToTable("ProposalEvents");
                 });
 
             modelBuilder.Entity("Dyadic.Domain.Entities.ResearchArea", b =>
@@ -162,7 +237,7 @@ namespace Dyadic.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("ResearchAreas", (string)null);
+                    b.ToTable("ResearchAreas");
                 });
 
             modelBuilder.Entity("Dyadic.Domain.Entities.StudentProfile", b =>
@@ -187,7 +262,7 @@ namespace Dyadic.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("StudentProfiles", (string)null);
+                    b.ToTable("StudentProfiles");
                 });
 
             modelBuilder.Entity("Dyadic.Domain.Entities.SupervisorProfile", b =>
@@ -215,7 +290,7 @@ namespace Dyadic.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("SupervisorProfiles", (string)null);
+                    b.ToTable("SupervisorProfiles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -349,6 +424,39 @@ namespace Dyadic.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Dyadic.Domain.Entities.AllocationOverride", b =>
+                {
+                    b.HasOne("Dyadic.Domain.Entities.SupervisorProfile", "NewSupervisor")
+                        .WithMany()
+                        .HasForeignKey("NewSupervisorId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Dyadic.Domain.Entities.SupervisorProfile", "OldSupervisor")
+                        .WithMany()
+                        .HasForeignKey("OldSupervisorId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Dyadic.Domain.Entities.ApplicationUser", "PerformedBy")
+                        .WithMany()
+                        .HasForeignKey("PerformedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Dyadic.Domain.Entities.Proposal", "Proposal")
+                        .WithMany()
+                        .HasForeignKey("ProposalId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("NewSupervisor");
+
+                    b.Navigation("OldSupervisor");
+
+                    b.Navigation("PerformedBy");
+
+                    b.Navigation("Proposal");
+                });
+
             modelBuilder.Entity("Dyadic.Domain.Entities.Proposal", b =>
                 {
                     b.HasOne("Dyadic.Domain.Entities.ResearchArea", "ResearchArea")
@@ -371,6 +479,32 @@ namespace Dyadic.Infrastructure.Migrations
                     b.Navigation("Student");
 
                     b.Navigation("Supervisor");
+                });
+
+            modelBuilder.Entity("Dyadic.Domain.Entities.ProposalEvent", b =>
+                {
+                    b.HasOne("Dyadic.Domain.Entities.ApplicationUser", "Actor")
+                        .WithMany()
+                        .HasForeignKey("ActorUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Dyadic.Domain.Entities.Proposal", "Proposal")
+                        .WithMany()
+                        .HasForeignKey("ProposalId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Dyadic.Domain.Entities.SupervisorProfile", "RelatedSupervisor")
+                        .WithMany()
+                        .HasForeignKey("RelatedSupervisorId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Actor");
+
+                    b.Navigation("Proposal");
+
+                    b.Navigation("RelatedSupervisor");
                 });
 
             modelBuilder.Entity("Dyadic.Domain.Entities.StudentProfile", b =>
