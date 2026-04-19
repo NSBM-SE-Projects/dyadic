@@ -19,32 +19,40 @@ public class ResearchAreasModel : PageModel
 
     public List<ResearchArea> Areas { get; set; } = new();
 
-    [BindProperty]
-    public string NewName { get; set; } = string.Empty;
+    public class AddAreaInput
+    {
+        [Required(ErrorMessage = "Name is required.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Name must be 2–100 characters.")]
+        public string Name { get; set; } = string.Empty;
+    }
 
-    [BindProperty]
-    public Guid EditId { get; set; }
+    public class EditAreaInput
+    {
+        [Required]
+        public Guid Id { get; set; }
 
-    [BindProperty]
-    public string EditName { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Name is required.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Name must be 2–100 characters.")]
+        public string Name { get; set; } = string.Empty;
+    }
 
     public async Task OnGetAsync()
     {
         Areas = await _researchAreaService.GetAllAsync();
     }
 
-    public async Task<IActionResult> OnPostAddAsync()
+    public async Task<IActionResult> OnPostAddAsync(AddAreaInput input)
     {
-        if (string.IsNullOrWhiteSpace(NewName))
+        if (!ModelState.IsValid)
         {
-            TempData["Error"] = "Name is required.";
+            TempData["Error"] = FirstError();
             return RedirectToPage();
         }
 
         try
         {
-            await _researchAreaService.CreateAsync(NewName.Trim());
-            TempData["Success"] = $"Research area '{NewName.Trim()}' added.";
+            await _researchAreaService.CreateAsync(input.Name.Trim());
+            TempData["Success"] = $"Research area '{input.Name.Trim()}' added.";
         }
         catch (InvalidOperationException ex)
         {
@@ -54,17 +62,17 @@ public class ResearchAreasModel : PageModel
         return RedirectToPage();
     }
 
-    public async Task<IActionResult> OnPostEditAsync()
+    public async Task<IActionResult> OnPostEditAsync(EditAreaInput input)
     {
-        if (string.IsNullOrWhiteSpace(EditName))
+        if (!ModelState.IsValid)
         {
-            TempData["Error"] = "Name is required.";
+            TempData["Error"] = FirstError();
             return RedirectToPage();
         }
 
         try
         {
-            await _researchAreaService.UpdateAsync(EditId, EditName.Trim());
+            await _researchAreaService.UpdateAsync(input.Id, input.Name.Trim());
             TempData["Success"] = "Research area updated.";
         }
         catch (InvalidOperationException ex)
@@ -90,15 +98,26 @@ public class ResearchAreasModel : PageModel
         return RedirectToPage();
     }
 
-    public async Task<IActionResult> OnPostReactivate(Guid id) {
-        try {
+    public async Task<IActionResult> OnPostReactivateAsync(Guid id)
+    {
+        try
+        {
             await _researchAreaService.ReactivateAsync(id);
-            TempData["Success"] = "Research area reactivated";
+            TempData["Success"] = "Research area reactivated.";
         }
-        catch (InvalidOperationException ex) {
+        catch (InvalidOperationException ex)
+        {
             TempData["Error"] = ex.Message;
         }
 
         return RedirectToPage();
+    }
+
+    private string FirstError()
+    {
+        return ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage)
+            .FirstOrDefault() ?? "Invalid input.";
     }
 }

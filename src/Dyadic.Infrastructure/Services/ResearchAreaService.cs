@@ -1,5 +1,6 @@
 using Dyadic.Application.Services;
 using Dyadic.Domain.Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dyadic.Infrastructure.Services;
@@ -43,7 +44,16 @@ public class ResearchAreaService : IResearchAreaService
         };
 
         _db.ResearchAreas.Add(area);
-        await _db.SaveChangesAsync();
+
+        try
+        {
+            await _db.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (IsUniqueNameViolation(ex))
+        {
+            throw new InvalidOperationException($"A research area named '{name}' already exists.");
+        }
+
         return area;
     }
 
@@ -57,7 +67,16 @@ public class ResearchAreaService : IResearchAreaService
             throw new InvalidOperationException($"A research area named '{name}' already exists.");
 
         area.Name = name;
-        await _db.SaveChangesAsync();
+
+        try
+        {
+            await _db.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (IsUniqueNameViolation(ex))
+        {
+            throw new InvalidOperationException($"A research area named '{name}' already exists.");
+        }
+
         return area;
     }
 
@@ -70,11 +89,18 @@ public class ResearchAreaService : IResearchAreaService
         await _db.SaveChangesAsync();
     }
 
-    public async Task ReactivateAsync(Guid id) {
+    public async Task ReactivateAsync(Guid id)
+    {
         var area = await _db.ResearchAreas.FindAsync(id)
             ?? throw new InvalidOperationException("Research area not found.");
 
         area.IsActive = true;
         await _db.SaveChangesAsync();
+    }
+
+    private static bool IsUniqueNameViolation(DbUpdateException ex)
+    {
+        return ex.InnerException is SqlException sql &&
+               (sql.Number == 2627 || sql.Number == 2601);
     }
 }
