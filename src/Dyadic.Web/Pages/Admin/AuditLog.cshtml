@@ -5,11 +5,26 @@
 }
 
 <div class="container py-4">
-    <h2 class="mb-4">Audit Log</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Audit Log</h2>
+        <form method="get" class="d-flex align-items-center gap-2">
+            <label class="form-label mb-0 small fw-semibold">Filter:</label>
+            @{
+                var selAll      = Model.Filter == "All"            ? "selected" : null;
+                var selAdmin    = Model.Filter == "AdminOverrides" ? "selected" : null;
+                var selStudent  = Model.Filter == "StudentEvents"  ? "selected" : null;
+            }
+            <select name="Filter" class="form-select form-select-sm" onchange="this.form.submit()" style="width:auto">
+                <option value="All" selected="@selAll">All</option>
+                <option value="AdminOverrides" selected="@selAdmin">Admin Overrides</option>
+                <option value="StudentEvents" selected="@selStudent">Student Events</option>
+            </select>
+        </form>
+    </div>
 
     @if (!Model.Entries.Any())
     {
-        <p class="text-muted">No override actions recorded yet.</p>
+        <p class="text-muted">No audit entries recorded yet.</p>
     }
     else
     {
@@ -18,10 +33,11 @@
                 <thead class="table-secondary">
                     <tr>
                         <th>Timestamp</th>
-                        <th>Admin</th>
+                        <th>Actor</th>
+                        <th>Role</th>
                         <th>Action</th>
                         <th>Proposal</th>
-                        <th>Old Supervisor</th>
+                        <th>Supervisor</th>
                         <th>New Supervisor</th>
                         <th>Reason</th>
                     </tr>
@@ -29,15 +45,25 @@
                 <tbody>
                     @foreach (var entry in Model.Entries)
                     {
-                        var actionBadge = entry.Action.ToString() == "Reassign" ? "bg-success" : "bg-danger";
+                        var roleBadge = entry.ActorRole == "Admin" ? "bg-dark" : "bg-primary";
+                        var actionBadge = entry.Action switch
+                        {
+                            "Reassign"      => "bg-success",
+                            "Unmatch"       => "bg-danger",
+                            "Withdrawn"     => "bg-secondary",
+                            "MatchConfirmed"=> "bg-success",
+                            "MatchRejected" => "bg-warning text-dark",
+                            _               => "bg-secondary"
+                        };
                         <tr>
                             <td>@entry.Timestamp.ToLocalTime().ToString("dd MMM yyyy HH:mm")</td>
-                            <td>@entry.PerformedBy.FullName</td>
+                            <td>@entry.Actor</td>
+                            <td><span class="badge @roleBadge">@entry.ActorRole</span></td>
                             <td><span class="badge @actionBadge">@entry.Action</span></td>
-                            <td>@entry.Proposal.Title</td>
-                            <td>@(entry.OldSupervisor != null ? entry.OldSupervisor.User.FullName : "—")</td>
-                            <td>@(entry.NewSupervisor != null ? entry.NewSupervisor.User.FullName : "—")</td>
-                            <td>@entry.Reason</td>
+                            <td>@entry.ProposalTitle</td>
+                            <td>@(entry.OldSupervisor ?? "—")</td>
+                            <td>@(entry.NewSupervisor ?? "—")</td>
+                            <td>@(entry.Reason ?? "N/A")</td>
                         </tr>
                     }
                 </tbody>
