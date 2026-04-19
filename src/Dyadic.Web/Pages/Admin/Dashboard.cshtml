@@ -1,0 +1,113 @@
+@page
+@model Dyadic.Web.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Admin Dashboard</h2>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card text-center border-success">
+                <div class="card-body">
+                    <h3 class="text-success">@Model.Stats.TotalProposals</h3>
+                    <p class="mb-0 text-muted small">Total Proposals</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center border-dark">
+                <div class="card-body">
+                    <h3>@Model.Stats.FinalizedCount</h3>
+                    <p class="mb-0 text-muted small">Finalized</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center border-primary">
+                <div class="card-body">
+                    <h3 class="text-primary">@Model.Stats.SubmittedCount</h3>
+                    <p class="mb-0 text-muted small">Awaiting Review</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center border-success">
+                <div class="card-body">
+                    <h3 class="text-success">@Model.Stats.TotalSupervisors</h3>
+                    <p class="mb-0 text-muted small">Supervisors</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <span class="badge bg-secondary me-1">Draft: @Model.Stats.DraftCount</span>
+        <span class="badge bg-primary me-1">Submitted: @Model.Stats.SubmittedCount</span>
+        <span class="badge bg-success me-1">Accepted: @Model.Stats.AcceptedCount</span>
+        <span class="badge bg-dark me-1">Finalized: @Model.Stats.FinalizedCount</span>
+        <span class="badge bg-info me-1">Students: @Model.Stats.TotalStudents</span>
+        <span class="badge bg-success">Supervisors: @Model.Stats.TotalSupervisors</span>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between mt-4 mb-3">
+        <h5 class="mb-0">All Proposals</h5>
+        <form method="get" class="d-flex align-items-center gap-2">
+            <div class="form-check mb-0">
+                <input class="form-check-input" type="checkbox" name="ShowDrafts" id="showDrafts"
+                       value="true" @(Model.ShowDrafts ? "checked" : "") onchange="this.form.submit()" />
+                <label class="form-check-label small" for="showDrafts">Show Drafts</label>
+            </div>
+        </form>
+    </div>
+
+    @if (!Model.Proposals.Any())
+    {
+        <p class="text-muted">No proposals yet.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-success">
+                    <tr>
+                        <th>Student</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Supervisor</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var proposal in Model.Proposals)
+                    {
+                        <tr>
+                            <td>@proposal.Student.User.FullName</td>
+                            <td>@proposal.Title</td>
+                            <td>
+                                @{
+                                    var (badgeClass, badgeText) = proposal.Status.ToString() switch
+                                    {
+                                        "Draft"      => ("bg-secondary", "Draft"),
+                                        "Submitted"  => ("bg-primary", "Submitted"),
+                                        "Accepted"   => ("bg-success", "Accepted"),
+                                        "Finalized"  => ("bg-dark", "Finalized"),
+                                        _            => ("bg-secondary", proposal.Status.ToString())
+                                    };
+                                }
+                                <span class="badge @badgeClass">@badgeText</span>
+                            </td>
+                            <td>@(proposal.Supervisor != null ? proposal.Supervisor.User.FullName : "—")</td>
+                            <td>@proposal.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="mt-3">
+        <a asp-page="/Admin/Supervisors" class="btn btn-outline-success">View Supervisor Capacity</a>
+    </div>
+</div>
