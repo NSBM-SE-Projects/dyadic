@@ -123,6 +123,8 @@ public class AdminService : IAdminService
         return await _db.AllocationOverrides
             .Include(a => a.Proposal)
             .Include(a => a.PerformedBy)
+            .Include(a => a.OldSupervisor).ThenInclude(s => s!.User)
+            .Include(a => a.NewSupervisor).ThenInclude(s => s!.User)
             .OrderByDescending(a => a.Timestamp)
             .ToListAsync();
     }

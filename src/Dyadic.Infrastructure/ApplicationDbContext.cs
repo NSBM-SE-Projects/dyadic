@@ -60,6 +60,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             .HasForeignKey(a => a.PerformedByUserId)
             .OnDelete(DeleteBehavior.NoAction);
 
+        modelBuilder.Entity<AllocationOverride>()
+            .HasOne(a => a.OldSupervisor)
+            .WithMany()
+            .HasForeignKey(a => a.OldSupervisorId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<AllocationOverride>()
+            .HasOne(a => a.NewSupervisor)
+            .WithMany()
+            .HasForeignKey(a => a.NewSupervisorId)
+            .OnDelete(DeleteBehavior.NoAction);
+
         // OverrideAction as string in DB
         modelBuilder.Entity<AllocationOverride>()
             .Property(a => a.Action)
