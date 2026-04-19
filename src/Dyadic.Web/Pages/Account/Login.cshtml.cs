@@ -9,10 +9,12 @@ namespace Dyadic.Web.Pages.Account;
 public class LoginModel : PageModel
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public LoginModel(SignInManager<ApplicationUser> signInManager)
+    public LoginModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
     {
         _signInManager = signInManager;
+        _userManager = userManager;
     }
 
     [BindProperty]
@@ -45,7 +47,16 @@ public class LoginModel : PageModel
             Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
         if (result.Succeeded)
+        {
+            var user = await _userManager.FindByEmailAsync(Input.Email);
+            if (user != null && !user.IsActive)
+            {
+                await _signInManager.SignOutAsync();
+                ModelState.AddModelError(string.Empty, "Your account has been deactivated. Contact an administrator.");
+                return Page();
+            }
             return LocalRedirect(returnUrl ?? "/Dashboard");
+        }
 
         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
         return Page();
