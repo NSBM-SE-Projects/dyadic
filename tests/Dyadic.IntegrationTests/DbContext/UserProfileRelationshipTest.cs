@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dyadic.IntegrationTests.DbContext;
 
+[Trait("Category", "InMemory")]
 public class UserProfileRelationshipTests : IDisposable {
     private readonly Infrastructure.ApplicationDbContext _db;
 
