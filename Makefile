@@ -1,5 +1,5 @@
 # Author: Dwain
-.PHONY: help setup up down run test test-sql migrate reset-db clean fresh db-check
+.PHONY: help setup up down run test test-sql test-e2e migrate reset-db clean fresh db-check
 
 # Default target
 help:
@@ -10,6 +10,7 @@ help:
 	@echo " make run            RUN THE WEB APP"
 	@echo " make test           RUN UNIT + INMEMORY TESTS (NO DOCKER REQUIRED)"
 	@echo " make test-sql       RUN SQL SERVER INTEGRATION TESTS (REQUIRES: make up)"
+	@echo " make test-e2e       RUN END-TO-END JOURNEY TESTS (NO DOCKER REQUIRED)"
 	@echo " make migrate        APPLY PENDING EF CORE MIGRATIONS"
 	@echo " make reset-db       WIPE DATABASE AND RE-APPLY ALL MIGRATIONS (BE CAREFUL!)"
 	@echo " make clean          REMOVE BUILD ARTIFACTS (bin/, obj/)"
@@ -34,6 +35,9 @@ test:
 
 test-sql:
 	dotnet test --filter "Category=SqlServer"
+
+test-e2e:
+	dotnet test --filter "Category=EndToEnd"
 
 migrate:
 	dotnet ef database update -p src/Dyadic.Infrastructure -s src/Dyadic.Web

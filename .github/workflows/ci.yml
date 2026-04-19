@@ -40,6 +40,9 @@ jobs:
       - name: Run InMemory Integration Tests
         run: dotnet test tests/Dyadic.IntegrationTests --no-build --verbosity normal --filter "Category=InMemory"
 
+      - name: Run E2E Journey Tests
+        run: dotnet test tests/Dyadic.IntegrationTests --no-build --verbosity normal --filter "Category=EndToEnd"
+
       - name: Run SqlServer Integration Tests
         run: dotnet test tests/Dyadic.IntegrationTests --no-build --verbosity normal --filter "Category=SqlServer"
         env:
