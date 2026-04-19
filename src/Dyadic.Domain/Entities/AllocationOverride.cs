@@ -11,7 +11,9 @@ public class AllocationOverride
     public ApplicationUser PerformedBy { get; set; } = null!;
     public OverrideAction Action { get; set; }
     public Guid? OldSupervisorId { get; set; }
+    public SupervisorProfile? OldSupervisor { get; set; }
     public Guid? NewSupervisorId { get; set; }
+    public SupervisorProfile? NewSupervisor { get; set; }
     public string Reason { get; set; } = string.Empty;
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 }
