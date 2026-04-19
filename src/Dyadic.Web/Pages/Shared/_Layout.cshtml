@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="~/Dyadic.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
+@{ var currentPage = ViewContext.RouteData.Values["Page"]?.ToString() ?? ""; }
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-success border-bottom box-shadow mb-3">
             <div class="container">
@@ -24,45 +25,45 @@
                 <div class="navbar-collapse collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-page="/Index">Home</a>
+                            <a class="nav-link text-white @(currentPage == "/Index" ? "active fw-bold" : "")" asp-page="/Index">Home</a>
                         </li>
                         @if (SignInManager.IsSignedIn(User) && User.IsInRole("Student"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-page="/Student/MyProposal">My Proposal</a>
+                                <a class="nav-link text-white @(currentPage.StartsWith("/Student/MyProposal") ? "active fw-bold" : "")" asp-page="/Student/MyProposal">My Proposal</a>
                             </li>
                         }
                         else if (SignInManager.IsSignedIn(User) && User.IsInRole("Supervisor"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-page="/Supervisor/Dashboard">Review Proposals</a>
+                                <a class="nav-link text-white @(currentPage.StartsWith("/Supervisor/Dashboard") ? "active fw-bold" : "")" asp-page="/Supervisor/Dashboard">Review Proposals</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-page="/Supervisor/Profile">My Profile</a>
+                                <a class="nav-link text-white @(currentPage.StartsWith("/Supervisor/Profile") ? "active fw-bold" : "")" asp-page="/Supervisor/Profile">My Profile</a>
                             </li>
                         }
                         else if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-page="/Admin/Dashboard">Admin Dashboard</a>
+                                <a class="nav-link text-white @(currentPage.StartsWith("/Admin/Dashboard") ? "active fw-bold" : "")" asp-page="/Admin/Dashboard">Admin Dashboard</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-page="/Admin/Supervisors">Supervisors</a>
+                                <a class="nav-link text-white @(currentPage.StartsWith("/Admin/Supervisors") ? "active fw-bold" : "")" asp-page="/Admin/Supervisors">Supervisors</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-page="/Admin/AuditLog">Audit Log</a>
+                                <a class="nav-link text-white @(currentPage.StartsWith("/Admin/AuditLog") ? "active fw-bold" : "")" asp-page="/Admin/AuditLog">Audit Log</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-page="/Admin/ResearchAreas">Research Areas</a>
+                                <a class="nav-link text-white @(currentPage.StartsWith("/Admin/ResearchAreas") ? "active fw-bold" : "")" asp-page="/Admin/ResearchAreas">Research Areas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-page="/Admin/Users">Users</a>
+                                <a class="nav-link text-white @(currentPage.StartsWith("/Admin/Users") ? "active fw-bold" : "")" asp-page="/Admin/Users">Users</a>
                             </li>
                         }
                         else if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-page="/Dashboard">Dashboard</a>
+                                <a class="nav-link text-white @(currentPage == "/Dashboard" ? "active fw-bold" : "")" asp-page="/Dashboard">Dashboard</a>
                             </li>
                         }
                     </ul>
@@ -81,10 +82,10 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-page="/Account/Login">Login</a>
+                                <a class="nav-link text-white @(currentPage == "/Account/Login" ? "active fw-bold" : "")" asp-page="/Account/Login">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-page="/Account/Register">Register</a>
+                                <a class="nav-link text-white @(currentPage == "/Account/Register" ? "active fw-bold" : "")" asp-page="/Account/Register">Register</a>
                             </li>
                         }
                     </ul>
@@ -110,5 +111,12 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        setTimeout(function () {
+            document.querySelectorAll('.alert-dismissible').forEach(function (el) {
+                bootstrap.Alert.getOrCreateInstance(el).close();
+            });
+        }, 5000);
+    </script>
 </body>
 </html>

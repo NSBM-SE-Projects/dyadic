@@ -62,33 +62,21 @@
                     <strong>&#8987; Awaiting supervisor interest</strong><br />
                     Your proposal has been submitted to the supervisor pool. A supervisor will review it and reach out if they're interested — you'll see a confirmation request here when that happens.
                 </div>
-                <form method="post">
-                    <button type="submit" asp-page-handler="Withdraw"
-                            class="btn btn-outline-danger"
-                            onclick="return confirm('Are you sure you want to withdraw your proposal? It will return to Draft status.')">
-                        Withdraw Proposal
-                    </button>
-                </form>
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                    Withdraw Proposal
+                </button>
             }
             else if (Model.Proposal.Status == Dyadic.Domain.Enums.ProposalStatus.Accepted)
             {
                 <div class="alert alert-info mt-3">
                     A supervisor has expressed interest in your proposal.
                 </div>
-                <form method="post" class="d-inline me-2">
-                    <input type="hidden" name="proposalId" value="@Model.Proposal.Id" />
-                    <button type="submit" asp-page-handler="Confirm" class="btn btn-success"
-                            onclick="return confirm('Confirm this match? This will finalize your proposal.')">
-                        Confirm Match
-                    </button>
-                </form>
-                <form method="post" class="d-inline">
-                    <input type="hidden" name="proposalId" value="@Model.Proposal.Id" />
-                    <button type="submit" asp-page-handler="Reject" class="btn btn-outline-danger"
-                            onclick="return confirm('Decline this match? Your proposal will return to the pool.')">
-                        Decline Match
-                    </button>
-                </form>
+                <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#confirmMatchModal">
+                    Confirm Match
+                </button>
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#declineMatchModal">
+                    Decline Match
+                </button>
             }
             else if (Model.Proposal.Status == Dyadic.Domain.Enums.ProposalStatus.Finalized)
             {
@@ -115,5 +103,70 @@
                 <p class="text-muted fst-italic">This proposal is locked and cannot be edited.</p>
             }
         }
+    </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div class="modal fade" id="withdrawModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Withdraw Proposal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to withdraw your proposal? It will return to Draft status.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post">
+                    <button type="submit" asp-page-handler="Withdraw" class="btn btn-danger">Withdraw</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Match Modal -->
+<div class="modal fade" id="confirmMatchModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Match</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Confirm this match? This will finalize your proposal and assign you to this supervisor.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post">
+                    <input type="hidden" name="proposalId" value="@Model.Proposal?.Id" />
+                    <button type="submit" asp-page-handler="Confirm" class="btn btn-success">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Decline Match Modal -->
+<div class="modal fade" id="declineMatchModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Decline Match</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Decline this match? Your proposal will return to the supervisor pool.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post">
+                    <input type="hidden" name="proposalId" value="@Model.Proposal?.Id" />
+                    <button type="submit" asp-page-handler="Reject" class="btn btn-danger">Decline</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
