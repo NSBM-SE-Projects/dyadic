@@ -20,6 +20,9 @@ CLAUDE.md
 *.userosscache
 *.sln.docstates
 
+# Tests
+coverage-report/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

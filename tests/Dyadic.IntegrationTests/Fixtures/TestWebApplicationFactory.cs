@@ -84,7 +84,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
         var html = await getResponse.Content.ReadAsStringAsync();
         var token = ExtractAntiforgeryToken(html);
 
-        var form = new FormUrlEncodedContent(new Dictionary<string, string>
+        using var form = new FormUrlEncodedContent(new Dictionary<string, string>
         {
             ["Input.Email"]                = email,
             ["Input.Password"]             = password,

@@ -22,7 +22,7 @@ public class SupervisorJourneyTests : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        var supervisorUser = await _factory.SeedUserAsync("Dr. Smith", "smith@test.com", "Supervisor");
+        _ = await _factory.SeedUserAsync("Dr. Smith", "smith@test.com", "Supervisor");
 
         // Seed a student profile + submitted proposal directly via DbContext.
         // FK constraints are not enforced by InMemory so we use a stub student user ID.
@@ -71,7 +71,7 @@ public class SupervisorJourneyTests : IAsyncLifetime
             await getResponse.Content.ReadAsStringAsync());
 
         // POST to accept the proposal (default OnPostAsync handler)
-        var form = new FormUrlEncodedContent(new Dictionary<string, string>
+        using var form = new FormUrlEncodedContent(new Dictionary<string, string>
         {
             ["proposalId"]                 = _proposalId.ToString(),
             ["__RequestVerificationToken"] = token

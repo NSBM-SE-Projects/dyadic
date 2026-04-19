@@ -90,7 +90,7 @@ public class AdminJourneyTests : IAsyncLifetime
 
         // Step 2 — POST Reassign
         var token = TestWebApplicationFactory.ExtractAntiforgeryToken(dashHtml);
-        var form = new FormUrlEncodedContent(new Dictionary<string, string>
+        using var form = new FormUrlEncodedContent(new Dictionary<string, string>
         {
             ["ProposalId"]                 = _proposalId.ToString(),
             ["NewSupervisorId"]            = _newSupervisorProfileId.ToString(),
