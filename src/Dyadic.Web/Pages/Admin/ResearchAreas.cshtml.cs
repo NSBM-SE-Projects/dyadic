@@ -20,15 +20,12 @@ public class ResearchAreasModel : PageModel
     public List<ResearchArea> Areas { get; set; } = new();
 
     [BindProperty]
-    [Required(ErrorMessage = "Name is required.")]
-    [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
     public string NewName { get; set; } = string.Empty;
 
     [BindProperty]
     public Guid EditId { get; set; }
 
     [BindProperty]
-    [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
     public string EditName { get; set; } = string.Empty;
 
     public async Task OnGetAsync()
@@ -38,16 +35,16 @@ public class ResearchAreasModel : PageModel
 
     public async Task<IActionResult> OnPostAddAsync()
     {
-        if (!ModelState.IsValid)
+        if (string.IsNullOrWhiteSpace(NewName))
         {
-            Areas = await _researchAreaService.GetAllAsync();
-            return Page();
+            TempData["Error"] = "Name is required.";
+            return RedirectToPage();
         }
 
         try
         {
-            await _researchAreaService.CreateAsync(NewName);
-            TempData["Success"] = $"Research area '{NewName}' added.";
+            await _researchAreaService.CreateAsync(NewName.Trim());
+            TempData["Success"] = $"Research area '{NewName.Trim()}' added.";
         }
         catch (InvalidOperationException ex)
         {
@@ -65,15 +62,9 @@ public class ResearchAreasModel : PageModel
             return RedirectToPage();
         }
 
-        if (!ModelState.IsValid)
-        {
-            Areas = await _researchAreaService.GetAllAsync();
-            return Page();
-        }
-
         try
         {
-            await _researchAreaService.UpdateAsync(EditId, EditName);
+            await _researchAreaService.UpdateAsync(EditId, EditName.Trim());
             TempData["Success"] = "Research area updated.";
         }
         catch (InvalidOperationException ex)
