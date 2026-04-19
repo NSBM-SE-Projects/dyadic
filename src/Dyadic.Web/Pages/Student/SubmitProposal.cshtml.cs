@@ -85,27 +85,10 @@ public class SubmitProposalModel : PageModel
 
     public async Task<IActionResult> OnPostDraftAsync()
     {
-        Input.Title = (Input.Title ?? string.Empty).Trim();
-        Input.Abstract = (Input.Abstract ?? string.Empty).Trim();
-        Input.TechStack = (Input.TechStack ?? string.Empty).Trim();
-        ModelState.Clear();
-        TryValidateModel(Input, nameof(Input));
-
-        if (!ModelState.IsValid)
+        if (!await ValidateInputAsync())
         {
             await LoadResearchAreas();
             return Page();
-        }
-
-        if (Input.ResearchAreaId.HasValue)
-        {
-            var areas = await _researchAreaService.GetActiveAsync();
-            if (!areas.Any(a => a.Id == Input.ResearchAreaId.Value))
-            {
-                ModelState.AddModelError("Input.ResearchAreaId", "Invalid research area.");
-                await LoadResearchAreas();
-                return Page();
-            }
         }
 
         var user = await _userManager.GetUserAsync(User);
@@ -124,27 +107,10 @@ public class SubmitProposalModel : PageModel
 
     public async Task<IActionResult> OnPostSubmitAsync()
     {
-        Input.Title = (Input.Title ?? string.Empty).Trim();
-        Input.Abstract = (Input.Abstract ?? string.Empty).Trim();
-        Input.TechStack = (Input.TechStack ?? string.Empty).Trim();
-        ModelState.Clear();
-        TryValidateModel(Input, nameof(Input));
-
-        if (!ModelState.IsValid)
+        if (!await ValidateInputAsync())
         {
             await LoadResearchAreas();
             return Page();
-        }
-
-        if (Input.ResearchAreaId.HasValue)
-        {
-            var areas = await _researchAreaService.GetActiveAsync();
-            if (!areas.Any(a => a.Id == Input.ResearchAreaId.Value))
-            {
-                ModelState.AddModelError("Input.ResearchAreaId", "Invalid research area.");
-                await LoadResearchAreas();
-                return Page();
-            }
         }
 
         var user = await _userManager.GetUserAsync(User);
@@ -160,6 +126,28 @@ public class SubmitProposalModel : PageModel
 
         await _proposalService.SubmitAsync(existing.Id);
         return RedirectToPage("/Student/MyProposal");
+    }
+
+    private async Task<bool> ValidateInputAsync()
+    {
+        Input.Title = (Input.Title ?? string.Empty).Trim();
+        Input.Abstract = (Input.Abstract ?? string.Empty).Trim();
+        Input.TechStack = (Input.TechStack ?? string.Empty).Trim();
+        ModelState.Clear();
+        TryValidateModel(Input, nameof(Input));
+
+        if (!ModelState.IsValid) return false;
+
+        if (Input.ResearchAreaId is Guid areaId)
+        {
+            var areas = await _researchAreaService.GetActiveAsync();
+            if (!areas.Any(a => a.Id == areaId))
+            {
+                ModelState.AddModelError("Input.ResearchAreaId", "Invalid research area.");
+                return false;
+            }
+        }
+        return true;
     }
 
     private async Task LoadResearchAreas()
