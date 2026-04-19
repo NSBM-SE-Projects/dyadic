@@ -65,6 +65,14 @@
                                     </button>
                                 </form>
                             }
+                            else {
+                                <form method ="post" asp-page-handler="Reactivate" class="d-inline">
+                                    <input type="hidden" name="id" value="@area.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                        Reactivate
+                                    </button>
+                                </form>
+                            }
                         </td>
                     </tr>
                 }

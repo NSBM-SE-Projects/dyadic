@@ -89,4 +89,16 @@ public class ResearchAreasModel : PageModel
 
         return RedirectToPage();
     }
+
+    public async Task<IActionResult> OnPostReactivate(Guid id) {
+        try {
+            await _researchAreaService.ReactivateAsync(id);
+            TempData["Success"] = "Research area reactivated";
+        }
+        catch (InvalidOperationException ex) {
+            TempData["Error"] = ex.Message;
+        }
+
+        return RedirectToPage();
+    }
 }

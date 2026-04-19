@@ -9,4 +9,5 @@ public interface IResearchAreaService
     Task<ResearchArea> CreateAsync(string name);
     Task<ResearchArea> UpdateAsync(Guid id, string name);
     Task DeactivateAsync(Guid id);
+    Task ReactivateAsync(Guid id);
 }

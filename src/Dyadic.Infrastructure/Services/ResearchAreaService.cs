@@ -69,4 +69,12 @@ public class ResearchAreaService : IResearchAreaService
         area.IsActive = false;
         await _db.SaveChangesAsync();
     }
+
+    public async Task ReactivateAsync(Guid id) {
+        var area = await _db.ResearchAreas.FindAsync(id)
+            ?? throw new InvalidOperationException("Research area not found.");
+
+        area.IsActive = true;
+        await _db.SaveChangesAsync();
+    }
 }
