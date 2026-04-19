@@ -33,13 +33,25 @@ public class SubmitProposalModel : PageModel
 
     public class InputModel
     {
-        [Required, MaxLength(200)]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Title is required.")]
+        [MinLength(10, ErrorMessage = "Title must be at least 10 characters.")]
+        [MaxLength(200)]
+        [RegularExpression(@"^[a-zA-Z0-9\s\-.,:;()'""?!]+$",
+            ErrorMessage = "Title contains invalid characters.")]
         public string Title { get; set; } = string.Empty;
 
-        [Required, MaxLength(2000)]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Abstract is required.")]
+        [MinLength(50, ErrorMessage = "Abstract must be at least 50 characters.")]
+        [MaxLength(2000)]
+        [RegularExpression(@"^[a-zA-Z0-9\s\-.,:;()'""?!\r\n]+$",
+            ErrorMessage = "Abstract contains invalid characters.")]
         public string Abstract { get; set; } = string.Empty;
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Tech Stack is required.")]
+        [MinLength(3, ErrorMessage = "Tech Stack must be at least 3 characters.")]
         [MaxLength(500)]
+        [RegularExpression(@"^[a-zA-Z0-9\s\-.,+#/()]+$",
+            ErrorMessage = "Tech Stack contains invalid characters.")]
         public string TechStack { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Please select a research area.")]
@@ -73,10 +85,27 @@ public class SubmitProposalModel : PageModel
 
     public async Task<IActionResult> OnPostDraftAsync()
     {
+        Input.Title = Input.Title.Trim();
+        Input.Abstract = Input.Abstract.Trim();
+        Input.TechStack = Input.TechStack.Trim();
+        ModelState.Clear();
+        TryValidateModel(Input, nameof(Input));
+
         if (!ModelState.IsValid)
         {
             await LoadResearchAreas();
             return Page();
+        }
+
+        if (Input.ResearchAreaId.HasValue)
+        {
+            var areas = await _researchAreaService.GetActiveAsync();
+            if (!areas.Any(a => a.Id == Input.ResearchAreaId.Value))
+            {
+                ModelState.AddModelError("Input.ResearchAreaId", "Invalid research area.");
+                await LoadResearchAreas();
+                return Page();
+            }
         }
 
         var user = await _userManager.GetUserAsync(User);
@@ -95,10 +124,27 @@ public class SubmitProposalModel : PageModel
 
     public async Task<IActionResult> OnPostSubmitAsync()
     {
+        Input.Title = Input.Title.Trim();
+        Input.Abstract = Input.Abstract.Trim();
+        Input.TechStack = Input.TechStack.Trim();
+        ModelState.Clear();
+        TryValidateModel(Input, nameof(Input));
+
         if (!ModelState.IsValid)
         {
             await LoadResearchAreas();
             return Page();
+        }
+
+        if (Input.ResearchAreaId.HasValue)
+        {
+            var areas = await _researchAreaService.GetActiveAsync();
+            if (!areas.Any(a => a.Id == Input.ResearchAreaId.Value))
+            {
+                ModelState.AddModelError("Input.ResearchAreaId", "Invalid research area.");
+                await LoadResearchAreas();
+                return Page();
+            }
         }
 
         var user = await _userManager.GetUserAsync(User);
