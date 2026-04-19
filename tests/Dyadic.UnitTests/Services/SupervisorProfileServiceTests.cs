@@ -154,4 +154,21 @@ public class SupervisorProfileServiceTests
 
         await act.Should().ThrowAsync<InvalidOperationException>();
     }
+
+    [Fact]
+    public async Task UpdateProfileAsync_UnknownUserId_AutoCreatesProfile_DoesNotThrow()
+    {
+        // UpdateProfileAsync calls GetOrCreateProfileAsync internally, which auto-creates
+        // a profile when none exists — it never throws "not found".
+        // This documents the actual behaviour: unknown userId creates a new profile.
+        using var ctx = CreateContext();
+        var svc = new SupervisorProfileService(ctx);
+        var unknownUserId = Guid.NewGuid();
+
+        var result = await svc.UpdateProfileAsync(unknownUserId, "CS", "AI", 3);
+
+        result.Should().NotBeNull();
+        result.UserId.Should().Be(unknownUserId);
+        ctx.SupervisorProfiles.Should().HaveCount(1);
+    }
 }
