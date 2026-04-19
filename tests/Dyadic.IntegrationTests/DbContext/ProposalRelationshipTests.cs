@@ -32,7 +32,7 @@ public class ProposalRelationshipTests : IDisposable {
 
         var proposal = new Proposal {
             Title = "Rocket science in education",
-            Description = "Exploring rockets and their physics",
+            Abstract ="Exploring rockets and their physics",
             StudentId = profile.Id,
             Status = ProposalStatus.Draft
         };
@@ -83,7 +83,7 @@ public class ProposalRelationshipTests : IDisposable {
 
             _db.Proposals.Add(new Proposal {
                 Title = $"Proposal {i}",
-                Description = $"Description {i}",
+                Abstract =$"Description {i}",
                 StudentId = studentProfile.Id,
                 SupervisorId = supervisor.Id,
                 Status = ProposalStatus.Accepted
@@ -123,7 +123,7 @@ public class ProposalRelationshipTests : IDisposable {
 
         var proposal = new Proposal {
             Title = $"Test {status}",
-            Description = "Round trip test",
+            Abstract ="Round trip test",
             StudentId = profile.Id,
             Status = status
         };

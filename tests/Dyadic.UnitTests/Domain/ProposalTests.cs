@@ -9,7 +9,7 @@ public class ProposalTests {
     public void Status_ShouldDefaultToDraft() {
         var proposal = new Proposal {
             Title = "Test Proposal",
-            Description = "A test"
+            Abstract = "A test"
         };
 
         proposal.Status.Should().Be(ProposalStatus.Draft);
@@ -20,7 +20,7 @@ public class ProposalTests {
         var before = DateTime.UtcNow;
         var proposal = new Proposal {
             Title = "Test",
-            Description = "Test"
+            Abstract = "Test"
         };
         var after = DateTime.UtcNow;
 
@@ -31,7 +31,7 @@ public class ProposalTests {
     public void SupervisorId_ShouldBeNullByDefault() {
         var proposal = new Proposal {
             Title = "Test",
-            Description = "Test"
+            Abstract = "Test"
         };
 
         proposal.SupervisorId.Should().BeNull();
