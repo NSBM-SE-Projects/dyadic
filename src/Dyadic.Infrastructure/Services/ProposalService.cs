@@ -108,7 +108,7 @@ public class ProposalService : IProposalService
         return proposal;
     }
 
-    public async Task<Proposal> WithdrawAsync(Guid proposalId, Guid studentProfileId)
+    public async Task<Proposal> WithdrawAsync(Guid proposalId, Guid studentProfileId, Guid actorUserId)
     {
         var proposal = await _db.Proposals.FindAsync(proposalId)
             ?? throw new InvalidOperationException("Proposal not found.");
@@ -119,7 +119,17 @@ public class ProposalService : IProposalService
         if (proposal.Status != ProposalStatus.Submitted)
             throw new InvalidOperationException("Only submitted proposals can be withdrawn.");
 
+        var auditEvent = new ProposalEvent
+        {
+            ProposalId          = proposalId,
+            ActorUserId         = actorUserId,
+            EventType           = ProposalEventType.Withdrawn,
+            RelatedSupervisorId = proposal.SupervisorId,
+            Timestamp           = DateTime.UtcNow
+        };
+
         proposal.Status = ProposalStatus.Draft;
+        _db.ProposalEvents.Add(auditEvent);
         await _db.SaveChangesAsync();
         return proposal;
     }
@@ -173,7 +183,7 @@ public class ProposalService : IProposalService
         return proposals;
     }
 
-    public async Task<Proposal> ConfirmMatchAsync(Guid proposalId, Guid studentProfileId)
+    public async Task<Proposal> ConfirmMatchAsync(Guid proposalId, Guid studentProfileId, Guid actorUserId)
     {
         var proposal = await _db.Proposals.FindAsync(proposalId)
             ?? throw new InvalidOperationException("Proposal not found.");
@@ -184,12 +194,22 @@ public class ProposalService : IProposalService
         if (proposal.Status != ProposalStatus.Accepted)
             throw new InvalidOperationException("Only accepted proposals can be confirmed.");
 
+        var auditEvent = new ProposalEvent
+        {
+            ProposalId          = proposalId,
+            ActorUserId         = actorUserId,
+            EventType           = ProposalEventType.MatchConfirmed,
+            RelatedSupervisorId = proposal.SupervisorId,
+            Timestamp           = DateTime.UtcNow
+        };
+
         proposal.Status = ProposalStatus.Finalized;
+        _db.ProposalEvents.Add(auditEvent);
         await _db.SaveChangesAsync();
         return proposal;
     }
 
-    public async Task<Proposal> RejectMatchAsync(Guid proposalId, Guid studentProfileId)
+    public async Task<Proposal> RejectMatchAsync(Guid proposalId, Guid studentProfileId, Guid actorUserId)
     {
         var proposal = await _db.Proposals.FindAsync(proposalId)
             ?? throw new InvalidOperationException("Proposal not found.");
@@ -200,8 +220,18 @@ public class ProposalService : IProposalService
         if (proposal.Status != ProposalStatus.Accepted)
             throw new InvalidOperationException("Only accepted proposals can be rejected.");
 
+        var auditEvent = new ProposalEvent
+        {
+            ProposalId          = proposalId,
+            ActorUserId         = actorUserId,
+            EventType           = ProposalEventType.MatchRejected,
+            RelatedSupervisorId = proposal.SupervisorId,
+            Timestamp           = DateTime.UtcNow
+        };
+
         proposal.Status = ProposalStatus.Submitted;
         proposal.SupervisorId = null;
+        _db.ProposalEvents.Add(auditEvent);
         await _db.SaveChangesAsync();
         return proposal;
     }
