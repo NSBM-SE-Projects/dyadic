@@ -17,23 +17,27 @@ public class AdminService : IAdminService
 
     public async Task<DashboardStats> GetDashboardStatsAsync()
     {
-        var proposals = await _db.Proposals.ToListAsync();
+        var statusCounts = await _db.Proposals
+            .GroupBy(p => p.Status)
+            .Select(g => new { Status = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.Status, x => x.Count);
 
         return new DashboardStats
         {
-            TotalProposals   = proposals.Count,
-            DraftCount       = proposals.Count(p => p.Status == ProposalStatus.Draft),
-            SubmittedCount   = proposals.Count(p => p.Status == ProposalStatus.Submitted),
-            AcceptedCount    = proposals.Count(p => p.Status == ProposalStatus.Accepted),
-            FinalizedCount   = proposals.Count(p => p.Status == ProposalStatus.Finalized),
+            TotalProposals   = statusCounts.Values.Sum(),
+            DraftCount       = statusCounts.GetValueOrDefault(ProposalStatus.Draft),
+            SubmittedCount   = statusCounts.GetValueOrDefault(ProposalStatus.Submitted),
+            AcceptedCount    = statusCounts.GetValueOrDefault(ProposalStatus.Accepted),
+            FinalizedCount   = statusCounts.GetValueOrDefault(ProposalStatus.Finalized),
             TotalStudents    = await _db.StudentProfiles.CountAsync(),
             TotalSupervisors = await _db.SupervisorProfiles.CountAsync()
         };
     }
 
-    public async Task<List<Proposal>> GetAllProposalsAsync()
+    public async Task<List<Proposal>> GetAllProposalsAsync(bool includeDrafts = false)
     {
         return await _db.Proposals
+            .Where(p => includeDrafts || p.Status != ProposalStatus.Draft)
             .Include(p => p.Student).ThenInclude(sp => sp.User)
             .Include(p => p.Supervisor).ThenInclude(sp => sp!.User)
             .OrderByDescending(p => p.CreatedAt)
