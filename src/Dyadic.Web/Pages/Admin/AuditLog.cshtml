@@ -1,0 +1,51 @@
+@page
+@model Dyadic.Web.Pages.Admin.AuditLogModel
+@{
+    ViewData["Title"] = "Audit Log";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Audit Log</h2>
+
+    @if (!Model.Entries.Any())
+    {
+        <p class="text-muted">No override actions recorded yet.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Admin</th>
+                        <th>Action</th>
+                        <th>Proposal</th>
+                        <th>Old Supervisor</th>
+                        <th>New Supervisor</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in Model.Entries)
+                    {
+                        var actionBadge = entry.Action.ToString() == "Reassign" ? "bg-success" : "bg-danger";
+                        <tr>
+                            <td>@entry.Timestamp.ToLocalTime().ToString("dd MMM yyyy HH:mm")</td>
+                            <td>@entry.PerformedBy.FullName</td>
+                            <td><span class="badge @actionBadge">@entry.Action</span></td>
+                            <td>@entry.Proposal.Title</td>
+                            <td>@(entry.OldSupervisor != null ? entry.OldSupervisor.User.FullName : "—")</td>
+                            <td>@(entry.NewSupervisor != null ? entry.NewSupervisor.User.FullName : "—")</td>
+                            <td>@entry.Reason</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="mt-3">
+        <a asp-page="/Admin/Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+</div>

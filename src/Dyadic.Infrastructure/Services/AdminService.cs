@@ -52,4 +52,80 @@ public class AdminService : IAdminService
             .OrderBy(sp => sp.User.FullName)
             .ToListAsync();
     }
+
+    public async Task<List<SupervisorProfile>> GetAvailableSupervisorsAsync(Guid excludeSupervisorId)
+    {
+        return await _db.SupervisorProfiles
+            .Include(sp => sp.User)
+            .Include(sp => sp.AcceptedProposals)
+            .Where(sp => sp.Id != excludeSupervisorId &&
+                         sp.AcceptedProposals.Count < sp.MaxStudents)
+            .OrderBy(sp => sp.User.FullName)
+            .ToListAsync();
+    }
+
+    public async Task ReassignProposalAsync(Guid proposalId, Guid newSupervisorId, Guid adminUserId, string reason)
+    {
+        var proposal = await _db.Proposals.FindAsync(proposalId)
+            ?? throw new InvalidOperationException("Proposal not found.");
+
+        var newSupervisor = await _db.SupervisorProfiles
+            .Include(sp => sp.AcceptedProposals)
+            .FirstOrDefaultAsync(sp => sp.Id == newSupervisorId)
+            ?? throw new InvalidOperationException("Supervisor not found.");
+
+        if (newSupervisor.AcceptedProposals.Count >= newSupervisor.MaxStudents)
+            throw new InvalidOperationException("The selected supervisor is at maximum capacity.");
+
+        var audit = new AllocationOverride
+        {
+            ProposalId        = proposalId,
+            PerformedByUserId = adminUserId,
+            Action            = OverrideAction.Reassign,
+            OldSupervisorId   = proposal.SupervisorId,
+            NewSupervisorId   = newSupervisorId,
+            Reason            = reason,
+            Timestamp         = DateTime.UtcNow
+        };
+
+        proposal.SupervisorId = newSupervisorId;
+        proposal.Status       = ProposalStatus.Accepted;
+
+        _db.AllocationOverrides.Add(audit);
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task UnmatchProposalAsync(Guid proposalId, Guid adminUserId, string reason)
+    {
+        var proposal = await _db.Proposals.FindAsync(proposalId)
+            ?? throw new InvalidOperationException("Proposal not found.");
+
+        var audit = new AllocationOverride
+        {
+            ProposalId        = proposalId,
+            PerformedByUserId = adminUserId,
+            Action            = OverrideAction.Unmatch,
+            OldSupervisorId   = proposal.SupervisorId,
+            NewSupervisorId   = null,
+            Reason            = reason,
+            Timestamp         = DateTime.UtcNow
+        };
+
+        proposal.SupervisorId = null;
+        proposal.Status       = ProposalStatus.Submitted;
+
+        _db.AllocationOverrides.Add(audit);
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task<List<AllocationOverride>> GetAuditLogAsync()
+    {
+        return await _db.AllocationOverrides
+            .Include(a => a.Proposal)
+            .Include(a => a.PerformedBy)
+            .Include(a => a.OldSupervisor).ThenInclude(s => s!.User)
+            .Include(a => a.NewSupervisor).ThenInclude(s => s!.User)
+            .OrderByDescending(a => a.Timestamp)
+            .ToListAsync();
+    }
 }
