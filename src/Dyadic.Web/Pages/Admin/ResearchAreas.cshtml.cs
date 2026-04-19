@@ -28,7 +28,6 @@ public class ResearchAreasModel : PageModel
     public Guid EditId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Name is required.")]
     [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
     public string EditName { get; set; } = string.Empty;
 
@@ -60,6 +59,12 @@ public class ResearchAreasModel : PageModel
 
     public async Task<IActionResult> OnPostEditAsync()
     {
+        if (string.IsNullOrWhiteSpace(EditName))
+        {
+            TempData["Error"] = "Name is required.";
+            return RedirectToPage();
+        }
+
         if (!ModelState.IsValid)
         {
             Areas = await _researchAreaService.GetAllAsync();
