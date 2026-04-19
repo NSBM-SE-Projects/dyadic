@@ -47,10 +47,9 @@ public class MyProposalModel : PageModel
         var proposal = await _proposalService.GetByStudentIdAsync(profile.Id);
         if (proposal == null) return RedirectToPage("/Student/SubmitProposal");
 
-        var actorUserId = Guid.Parse(_userManager.GetUserId(User)!);
         try
         {
-            await _proposalService.WithdrawAsync(proposal.Id, profile.Id, actorUserId);
+            await _proposalService.WithdrawAsync(proposal.Id, profile.Id, user.Id);
         }
         catch (InvalidOperationException ex)
         {
@@ -68,11 +67,10 @@ public class MyProposalModel : PageModel
         if (user == null) return Forbid();
 
         var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
-        var actorUserId = Guid.Parse(_userManager.GetUserId(User)!);
 
         try
         {
-            await _proposalService.ConfirmMatchAsync(proposalId, profile.Id, actorUserId);
+            await _proposalService.ConfirmMatchAsync(proposalId, profile.Id, user.Id);
         }
         catch (InvalidOperationException ex)
         {
@@ -90,11 +88,10 @@ public class MyProposalModel : PageModel
         if (user == null) return Forbid();
 
         var profile = await _proposalService.GetOrCreateStudentProfileAsync(user.Id);
-        var actorUserId = Guid.Parse(_userManager.GetUserId(User)!);
 
         try
         {
-            await _proposalService.RejectMatchAsync(proposalId, profile.Id, actorUserId);
+            await _proposalService.RejectMatchAsync(proposalId, profile.Id, user.Id);
         }
         catch (InvalidOperationException ex)
         {
