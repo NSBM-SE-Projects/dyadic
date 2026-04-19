@@ -2,6 +2,7 @@ using Dyadic.Application.DTOs;
 using Dyadic.Application.Services;
 using Dyadic.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Dyadic.Web.Pages.Admin;
@@ -19,9 +20,12 @@ public class DashboardModel : PageModel
     public DashboardStats Stats { get; set; } = new();
     public List<Proposal> Proposals { get; set; } = new();
 
+    [BindProperty(SupportsGet = true)]
+    public bool ShowDrafts { get; set; }
+
     public async Task OnGetAsync()
     {
         Stats = await _adminService.GetDashboardStatsAsync();
-        Proposals = await _adminService.GetAllProposalsAsync();
+        Proposals = await _adminService.GetAllProposalsAsync(ShowDrafts);
     }
 }

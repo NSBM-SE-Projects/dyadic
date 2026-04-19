@@ -51,7 +51,16 @@
         <span class="badge bg-success">Supervisors: @Model.Stats.TotalSupervisors</span>
     </div>
 
-    <h5 class="mt-4 mb-3">All Proposals</h5>
+    <div class="d-flex align-items-center justify-content-between mt-4 mb-3">
+        <h5 class="mb-0">All Proposals</h5>
+        <form method="get" class="d-flex align-items-center gap-2">
+            <div class="form-check mb-0">
+                <input class="form-check-input" type="checkbox" name="ShowDrafts" id="showDrafts"
+                       value="true" @(Model.ShowDrafts ? "checked" : "") onchange="this.form.submit()" />
+                <label class="form-check-label small" for="showDrafts">Show Drafts</label>
+            </div>
+        </form>
+    </div>
 
     @if (!Model.Proposals.Any())
     {
