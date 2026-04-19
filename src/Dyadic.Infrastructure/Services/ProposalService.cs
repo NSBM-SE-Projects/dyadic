@@ -134,13 +134,18 @@ public class ProposalService : IProposalService
         return proposal;
     }
 
-    public async Task<List<Proposal>> GetSubmittedProposalsAsync()
+    public async Task<List<Proposal>> GetSubmittedProposalsAsync(Guid? researchAreaId = null, string sort = "Newest")
     {
-        return await _db.Proposals
+        var query = _db.Proposals
             .Where(p => p.Status == ProposalStatus.Submitted)
-            .Include(p => p.ResearchArea)
-            .OrderByDescending(p => p.CreatedAt)
-            .ToListAsync();
+            .Where(p => !researchAreaId.HasValue || p.ResearchAreaId == researchAreaId)
+            .Include(p => p.ResearchArea);
+
+        var ordered = sort == "Oldest"
+            ? query.OrderBy(p => p.CreatedAt)
+            : query.OrderByDescending(p => p.CreatedAt);
+
+        return await ordered.ToListAsync();
     }
 
     public async Task<Proposal> AcceptProposalAsync(Guid proposalId, Guid supervisorProfileId)

@@ -34,9 +34,34 @@
         </div>
     }
 
+    <form method="get" class="row g-2 mb-4">
+        <div class="col-auto">
+            <select name="ResearchAreaFilter" class="form-select" onchange="this.form.submit()">
+                <option value="">All Research Areas</option>
+                @foreach (var area in Model.ResearchAreaOptions)
+                {
+                    <option value="@area.Value" selected="@(Model.ResearchAreaFilter.ToString() == area.Value)">@area.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col-auto">
+            <select name="Sort" class="form-select" onchange="this.form.submit()">
+                <option value="Newest" selected="@(Model.Sort == "Newest")">Newest first</option>
+                <option value="Oldest" selected="@(Model.Sort == "Oldest")">Oldest first</option>
+            </select>
+        </div>
+    </form>
+
     @if (!Model.Proposals.Any())
     {
-        <p class="text-muted">No submitted proposals available for review at this time.</p>
+        @if (Model.ResearchAreaFilter.HasValue)
+        {
+            <p class="text-muted">No submitted proposals match your filter. Try widening the filter or check back later.</p>
+        }
+        else
+        {
+            <p class="text-muted">No submitted proposals available for review at this time.</p>
+        }
     }
     else
     {
