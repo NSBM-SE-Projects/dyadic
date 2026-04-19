@@ -15,6 +15,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<Proposal> Proposals => Set<Proposal>();
     public DbSet<AllocationOverride> AllocationOverrides => Set<AllocationOverride>();
     public DbSet<ResearchArea> ResearchAreas => Set<ResearchArea>();
+    public DbSet<ProposalEvent> ProposalEvents => Set<ProposalEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
@@ -76,6 +77,30 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         // OverrideAction as string in DB
         modelBuilder.Entity<AllocationOverride>()
             .Property(a => a.Action)
+            .HasConversion<string>();
+
+        // ProposalEvent FKs
+        modelBuilder.Entity<ProposalEvent>()
+            .HasOne(e => e.Proposal)
+            .WithMany()
+            .HasForeignKey(e => e.ProposalId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<ProposalEvent>()
+            .HasOne(e => e.Actor)
+            .WithMany()
+            .HasForeignKey(e => e.ActorUserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<ProposalEvent>()
+            .HasOne(e => e.RelatedSupervisor)
+            .WithMany()
+            .HasForeignKey(e => e.RelatedSupervisorId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // ProposalEventType as string in DB
+        modelBuilder.Entity<ProposalEvent>()
+            .Property(e => e.EventType)
             .HasConversion<string>();
 
         // ResearchArea unique name

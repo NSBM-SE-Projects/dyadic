@@ -33,6 +33,7 @@ builder.Services.AddScoped<IProposalService, ProposalService>();
 builder.Services.AddScoped<ISupervisorProfileService, SupervisorProfileService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IResearchAreaService, ResearchAreaService>();
+builder.Services.AddScoped<IUserAdminService, UserAdminService>();
 
 var app = builder.Build();
 

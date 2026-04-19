@@ -129,4 +129,14 @@ public class AdminService : IAdminService
             .OrderByDescending(a => a.Timestamp)
             .ToListAsync();
     }
+
+    public async Task<List<ProposalEvent>> GetProposalEventsAsync()
+    {
+        return await _db.ProposalEvents
+            .Include(e => e.Proposal)
+            .Include(e => e.Actor)
+            .Include(e => e.RelatedSupervisor).ThenInclude(s => s!.User)
+            .OrderByDescending(e => e.Timestamp)
+            .ToListAsync();
+    }
 }

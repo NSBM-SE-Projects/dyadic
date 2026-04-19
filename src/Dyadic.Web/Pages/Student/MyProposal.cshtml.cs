@@ -49,7 +49,7 @@ public class MyProposalModel : PageModel
 
         try
         {
-            await _proposalService.WithdrawAsync(proposal.Id, profile.Id);
+            await _proposalService.WithdrawAsync(proposal.Id, profile.Id, user.Id);
         }
         catch (InvalidOperationException ex)
         {
@@ -70,7 +70,7 @@ public class MyProposalModel : PageModel
 
         try
         {
-            await _proposalService.ConfirmMatchAsync(proposalId, profile.Id);
+            await _proposalService.ConfirmMatchAsync(proposalId, profile.Id, user.Id);
         }
         catch (InvalidOperationException ex)
         {
@@ -91,7 +91,7 @@ public class MyProposalModel : PageModel
 
         try
         {
-            await _proposalService.RejectMatchAsync(proposalId, profile.Id);
+            await _proposalService.RejectMatchAsync(proposalId, profile.Id, user.Id);
         }
         catch (InvalidOperationException ex)
         {

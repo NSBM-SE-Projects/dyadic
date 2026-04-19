@@ -47,6 +47,10 @@
 
             @if (Model.Proposal.Status == Dyadic.Domain.Enums.ProposalStatus.Draft)
             {
+                <div class="alert alert-warning mt-3">
+                    <strong>&#9998; Draft — not yet submitted.</strong><br />
+                    Your proposal is saved but hasn't been sent to the supervisor pool yet. Click <em>Submit Proposal</em> when you're ready.
+                </div>
                 <div class="d-flex gap-2">
                     <a asp-page="/Student/SubmitProposal" class="btn btn-outline-secondary">Edit Draft</a>
                     <a asp-page="/Student/SubmitProposal" class="btn btn-success">Submit Proposal</a>
@@ -54,6 +58,10 @@
             }
             else if (Model.Proposal.Status == Dyadic.Domain.Enums.ProposalStatus.Submitted)
             {
+                <div class="alert alert-info mt-3">
+                    <strong>&#8987; Awaiting supervisor interest</strong><br />
+                    Your proposal has been submitted to the supervisor pool. A supervisor will review it and reach out if they're interested — you'll see a confirmation request here when that happens.
+                </div>
                 <form method="post">
                     <button type="submit" asp-page-handler="Withdraw"
                             class="btn btn-outline-danger"
