@@ -1,0 +1,132 @@
+@page
+@model Dyadic.Web.Pages.Admin.ResearchAreasModel
+@{
+    ViewData["Title"] = "Research Areas";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Research Areas</h2>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-success">
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Proposals</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var area in Model.Areas)
+                {
+                    <tr>
+                        <td>@area.Name</td>
+                        <td>
+                            @if (area.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td>@area.Proposals.Count</td>
+                        <td>@area.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-success me-1"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editModal"
+                                    data-area-id="@area.Id"
+                                    data-area-name="@area.Name">
+                                Edit
+                            </button>
+                            @if (area.IsActive)
+                            {
+                                <form method="post" asp-page-handler="Deactivate" class="d-inline">
+                                    <input type="hidden" name="id" value="@area.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Deactivate @area.Name? It will be hidden from the student dropdown but historical proposals are preserved.')">
+                                        Deactivate
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Add">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Research Area</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Name</label>
+                        <input name="NewName" class="form-control" maxlength="100" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Edit">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Research Area</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="EditId" id="editAreaId" />
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Name</label>
+                        <input name="EditName" id="editAreaName" class="form-control" maxlength="100" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('editModal').addEventListener('show.bs.modal', function (e) {
+            document.getElementById('editAreaId').value = e.relatedTarget.dataset.areaId;
+            document.getElementById('editAreaName').value = e.relatedTarget.dataset.areaName;
+        });
+    </script>
+}
