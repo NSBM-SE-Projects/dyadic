@@ -10,7 +10,10 @@
 
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">@TempData["Error"]</div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     }
 
     <form method="get" class="row g-2 mb-4">
@@ -88,14 +91,14 @@
 
                                     @if (u.IsActive)
                                     {
-                                        <form method="post" class="d-inline">
-                                            <input type="hidden" name="userId" value="@u.Id" />
-                                            <button type="submit" asp-page-handler="Deactivate"
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    onclick="return confirm('Deactivate @u.FullName? They won\'t be able to log in. Their proposals and audit history remain intact.')">
-                                                Deactivate
-                                            </button>
-                                        </form>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deactivateUserModal"
+                                                data-user-id="@u.Id"
+                                                data-user-name="@u.FullName">
+                                            Deactivate
+                                        </button>
                                     }
                                     else
                                     {
@@ -124,6 +127,37 @@
         <a asp-page="/Admin/Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
     </div>
 </div>
+
+<!-- Deactivate User Modal -->
+<div class="modal fade" id="deactivateUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Deactivate User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Deactivate <strong id="deactivateUserName"></strong>? They won't be able to log in. Their proposals and audit history remain intact.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post">
+                    <input type="hidden" name="userId" id="deactivateUserId" />
+                    <button type="submit" asp-page-handler="Deactivate" class="btn btn-danger">Deactivate</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('deactivateUserModal').addEventListener('show.bs.modal', function (e) {
+            document.getElementById('deactivateUserId').value = e.relatedTarget.dataset.userId;
+            document.getElementById('deactivateUserName').textContent = e.relatedTarget.dataset.userName;
+        });
+    </script>
+}
 
 @foreach (var u in Model.Users.Where(u => u.Id != Model.CurrentAdminId))
 {

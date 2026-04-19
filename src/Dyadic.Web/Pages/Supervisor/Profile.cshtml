@@ -9,7 +9,10 @@
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success">@TempData["Success"]</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     }
 
     <form method="post">
@@ -34,7 +37,10 @@
             <span asp-validation-for="MaxStudents" class="text-danger"></span>
         </div>
 
-        <button type="submit" class="btn btn-success">Save Profile</button>
+        <div class="d-flex gap-3">
+            <button type="submit" class="btn btn-success">Save Profile</button>
+            <a asp-page="/Supervisor/Dashboard" class="btn btn-outline-secondary">Cancel</a>
+        </div>
     </form>
 </div>
 

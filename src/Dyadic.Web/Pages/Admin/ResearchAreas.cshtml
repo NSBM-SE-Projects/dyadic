@@ -12,11 +12,17 @@
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success">@TempData["Success"]</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     }
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">@TempData["Error"]</div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     }
 
     <div class="table-responsive">
@@ -57,13 +63,13 @@
                             </button>
                             @if (area.IsActive)
                             {
-                                <form method="post" asp-page-handler="Deactivate" class="d-inline">
-                                    <input type="hidden" name="id" value="@area.Id" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('Deactivate @area.Name? It will be hidden from the student dropdown but historical proposals are preserved.')">
-                                        Deactivate
-                                    </button>
-                                </form>
+                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deactivateAreaModal"
+                                        data-area-id="@area.Id"
+                                        data-area-name="@area.Name">
+                                    Deactivate
+                                </button>
                             }
                             else {
                                 <form method ="post" asp-page-handler="Reactivate" class="d-inline">
@@ -105,6 +111,28 @@
     </div>
 </div>
 
+<!-- Deactivate Modal -->
+<div class="modal fade" id="deactivateAreaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Deactivate Research Area</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Deactivate <strong id="deactivateAreaName"></strong>? It will be hidden from the student dropdown but historical proposals are preserved.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-page-handler="Deactivate">
+                    <input type="hidden" name="id" id="deactivateAreaId" />
+                    <button type="submit" class="btn btn-danger">Deactivate</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1">
     <div class="modal-dialog">
@@ -135,6 +163,10 @@
         document.getElementById('editModal').addEventListener('show.bs.modal', function (e) {
             document.getElementById('editAreaId').value = e.relatedTarget.dataset.areaId;
             document.getElementById('editAreaName').value = e.relatedTarget.dataset.areaName;
+        });
+        document.getElementById('deactivateAreaModal').addEventListener('show.bs.modal', function (e) {
+            document.getElementById('deactivateAreaId').value = e.relatedTarget.dataset.areaId;
+            document.getElementById('deactivateAreaName').textContent = e.relatedTarget.dataset.areaName;
         });
     </script>
 }
