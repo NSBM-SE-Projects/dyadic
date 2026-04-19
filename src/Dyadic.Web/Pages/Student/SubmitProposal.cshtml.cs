@@ -85,9 +85,9 @@ public class SubmitProposalModel : PageModel
 
     public async Task<IActionResult> OnPostDraftAsync()
     {
-        Input.Title = Input.Title.Trim();
-        Input.Abstract = Input.Abstract.Trim();
-        Input.TechStack = Input.TechStack.Trim();
+        Input.Title = (Input.Title ?? string.Empty).Trim();
+        Input.Abstract = (Input.Abstract ?? string.Empty).Trim();
+        Input.TechStack = (Input.TechStack ?? string.Empty).Trim();
         ModelState.Clear();
         TryValidateModel(Input, nameof(Input));
 
@@ -124,9 +124,9 @@ public class SubmitProposalModel : PageModel
 
     public async Task<IActionResult> OnPostSubmitAsync()
     {
-        Input.Title = Input.Title.Trim();
-        Input.Abstract = Input.Abstract.Trim();
-        Input.TechStack = Input.TechStack.Trim();
+        Input.Title = (Input.Title ?? string.Empty).Trim();
+        Input.Abstract = (Input.Abstract ?? string.Empty).Trim();
+        Input.TechStack = (Input.TechStack ?? string.Empty).Trim();
         ModelState.Clear();
         TryValidateModel(Input, nameof(Input));
 
