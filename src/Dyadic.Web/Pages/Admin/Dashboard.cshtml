@@ -7,6 +7,15 @@
 <div class="container py-4">
     <h2 class="mb-4">Admin Dashboard</h2>
 
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
             <div class="card text-center border-success">
@@ -77,6 +86,7 @@
                         <th>Status</th>
                         <th>Supervisor</th>
                         <th>Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -100,6 +110,25 @@
                             </td>
                             <td>@(proposal.Supervisor != null ? proposal.Supervisor.User.FullName : "—")</td>
                             <td>@proposal.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+                            <td>
+                                @if (proposal.Status == Dyadic.Domain.Enums.ProposalStatus.Accepted ||
+                                     proposal.Status == Dyadic.Domain.Enums.ProposalStatus.Finalized)
+                                {
+                                    <button class="btn btn-sm btn-outline-success me-1"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#reassignModal"
+                                            data-proposal-id="@proposal.Id"
+                                            data-supervisor-id="@proposal.SupervisorId">
+                                        Reassign
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#unmatchModal"
+                                            data-proposal-id="@proposal.Id">
+                                        Unmatch
+                                    </button>
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -107,7 +136,82 @@
         </div>
     }
 
-    <div class="mt-3">
+    <div class="mt-3 d-flex gap-2">
         <a asp-page="/Admin/Supervisors" class="btn btn-outline-success">View Supervisor Capacity</a>
+        <a asp-page="/Admin/AuditLog" class="btn btn-outline-secondary">View Audit Log</a>
     </div>
 </div>
+
+<!-- Reassign Modal -->
+<div class="modal fade" id="reassignModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Reassign">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reassign Proposal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="ProposalId" id="reassignProposalId" />
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">New Supervisor</label>
+                        <select name="NewSupervisorId" class="form-select" required>
+                            <option value="">— Select supervisor —</option>
+                            @foreach (var supervisor in Model.AvailableSupervisors)
+                            {
+                                <option value="@supervisor.Id">
+                                    @supervisor.User.FullName (@supervisor.AcceptedProposals.Count/@supervisor.MaxStudents)
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reason <span class="text-muted small">(min 10 characters)</span></label>
+                        <textarea name="Reason" class="form-control" rows="3" maxlength="500" required minlength="10"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Reassign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Unmatch Modal -->
+<div class="modal fade" id="unmatchModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Unmatch">
+                <div class="modal-header">
+                    <h5 class="modal-title">Unmatch Proposal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="ProposalId" id="unmatchProposalId" />
+                    <p class="text-muted small">This will return the proposal to Submitted status and clear the supervisor assignment.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Reason <span class="text-muted small">(min 10 characters)</span></label>
+                        <textarea name="Reason" class="form-control" rows="3" maxlength="500" required minlength="10"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Unmatch</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('reassignModal').addEventListener('show.bs.modal', function (e) {
+            document.getElementById('reassignProposalId').value = e.relatedTarget.dataset.proposalId;
+        });
+        document.getElementById('unmatchModal').addEventListener('show.bs.modal', function (e) {
+            document.getElementById('unmatchProposalId').value = e.relatedTarget.dataset.proposalId;
+        });
+    </script>
+}
