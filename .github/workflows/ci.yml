@@ -37,7 +37,10 @@ jobs:
       - name: Run Unit Tests
         run: dotnet test tests/Dyadic.UnitTests --no-build --verbosity normal
 
-      - name: Run Integration Tests
-        run: dotnet test tests/Dyadic.IntegrationTests --no-build --verbosity normal
+      - name: Run InMemory Integration Tests
+        run: dotnet test tests/Dyadic.IntegrationTests --no-build --verbosity normal --filter "Category=InMemory"
+
+      - name: Run SqlServer Integration Tests
+        run: dotnet test tests/Dyadic.IntegrationTests --no-build --verbosity normal --filter "Category=SqlServer"
         env:
           ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=Dyadic_CI;User Id=sa;Password=CiTestPassword1!;TrustServerCertificate=True"
