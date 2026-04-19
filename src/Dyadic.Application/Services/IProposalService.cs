@@ -9,10 +9,10 @@ public interface IProposalService
     Task<Proposal> UpdateDraftAsync(Guid proposalId, string title, string abstractText, string techStack, Guid? researchAreaId);
     Task<Proposal> SubmitAsync(Guid proposalId);
     Task<Proposal?> GetByStudentIdAsync(Guid studentProfileId);
-    Task<Proposal> WithdrawAsync(Guid proposalId, Guid studentProfileId);
+    Task<Proposal> WithdrawAsync(Guid proposalId, Guid studentProfileId, Guid actorUserId);
     Task<List<Proposal>> GetSubmittedProposalsAsync();
     Task<Proposal> AcceptProposalAsync(Guid proposalId, Guid supervisorProfileId);
     Task<List<Proposal>> GetAcceptedBySupervisorAsync(Guid supervisorProfileId);
-    Task<Proposal> ConfirmMatchAsync(Guid proposalId, Guid studentProfileId);
-    Task<Proposal> RejectMatchAsync(Guid proposalId, Guid studentProfileId);
+    Task<Proposal> ConfirmMatchAsync(Guid proposalId, Guid studentProfileId, Guid actorUserId);
+    Task<Proposal> RejectMatchAsync(Guid proposalId, Guid studentProfileId, Guid actorUserId);
 }
