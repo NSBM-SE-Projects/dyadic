@@ -31,12 +31,21 @@ public class ProposalService : IProposalService
         return profile;
     }
 
-    public async Task<Proposal> CreateDraftAsync(Guid studentProfileId, string title, string description)
+    public async Task<Proposal> CreateDraftAsync(Guid studentProfileId, string title, string abstractText, string techStack, Guid? researchAreaId)
     {
+        if (researchAreaId.HasValue)
+        {
+            var area = await _db.ResearchAreas.FindAsync(researchAreaId.Value);
+            if (area == null || !area.IsActive)
+                throw new InvalidOperationException("Selected research area is not available.");
+        }
+
         var proposal = new Proposal
         {
             Title = title,
-            Description = description,
+            Abstract = abstractText,
+            TechStack = techStack,
+            ResearchAreaId = researchAreaId,
             StudentId = studentProfileId,
             Status = ProposalStatus.Draft,
             CreatedAt = DateTime.UtcNow
@@ -47,7 +56,7 @@ public class ProposalService : IProposalService
         return proposal;
     }
 
-    public async Task<Proposal> UpdateDraftAsync(Guid proposalId, string title, string description)
+    public async Task<Proposal> UpdateDraftAsync(Guid proposalId, string title, string abstractText, string techStack, Guid? researchAreaId)
     {
         var proposal = await _db.Proposals.FindAsync(proposalId)
             ?? throw new InvalidOperationException("Proposal not found.");
@@ -55,8 +64,17 @@ public class ProposalService : IProposalService
         if (proposal.Status != ProposalStatus.Draft)
             throw new InvalidOperationException("Only draft proposals can be edited.");
 
+        if (researchAreaId.HasValue)
+        {
+            var area = await _db.ResearchAreas.FindAsync(researchAreaId.Value);
+            if (area == null || !area.IsActive)
+                throw new InvalidOperationException("Selected research area is not available.");
+        }
+
         proposal.Title = title;
-        proposal.Description = description;
+        proposal.Abstract = abstractText;
+        proposal.TechStack = techStack;
+        proposal.ResearchAreaId = researchAreaId;
         await _db.SaveChangesAsync();
         return proposal;
     }
@@ -77,6 +95,7 @@ public class ProposalService : IProposalService
     public async Task<Proposal?> GetByStudentIdAsync(Guid studentProfileId)
     {
         var proposal = await _db.Proposals
+            .Include(p => p.ResearchArea)
             .FirstOrDefaultAsync(p => p.StudentId == studentProfileId);
 
         if (proposal?.Status == ProposalStatus.Finalized)
@@ -109,6 +128,7 @@ public class ProposalService : IProposalService
     {
         return await _db.Proposals
             .Where(p => p.Status == ProposalStatus.Submitted)
+            .Include(p => p.ResearchArea)
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
     }

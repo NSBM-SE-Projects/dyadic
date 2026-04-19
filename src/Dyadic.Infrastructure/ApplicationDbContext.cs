@@ -14,6 +14,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<SupervisorProfile> SupervisorProfiles => Set<SupervisorProfile>();
     public DbSet<Proposal> Proposals => Set<Proposal>();
     public DbSet<AllocationOverride> AllocationOverrides => Set<AllocationOverride>();
+    public DbSet<ResearchArea> ResearchAreas => Set<ResearchArea>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
@@ -76,5 +77,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         modelBuilder.Entity<AllocationOverride>()
             .Property(a => a.Action)
             .HasConversion<string>();
+
+        // ResearchArea unique name
+        modelBuilder.Entity<ResearchArea>()
+            .HasIndex(r => r.Name)
+            .IsUnique();
+
+        // ResearchArea <> Proposals (1:many)
+        modelBuilder.Entity<ResearchArea>()
+            .HasMany(r => r.Proposals)
+            .WithOne(p => p.ResearchArea)
+            .HasForeignKey(p => p.ResearchAreaId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

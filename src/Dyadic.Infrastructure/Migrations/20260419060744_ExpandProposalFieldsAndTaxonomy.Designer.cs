@@ -4,6 +4,7 @@ using Dyadic.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dyadic.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260419060744_ExpandProposalFieldsAndTaxonomy")]
+    partial class ExpandProposalFieldsAndTaxonomy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,48 +24,6 @@ namespace Dyadic.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Dyadic.Domain.Entities.AllocationOverride", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("NewSupervisorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("OldSupervisorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PerformedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProposalId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NewSupervisorId");
-
-                    b.HasIndex("OldSupervisorId");
-
-                    b.HasIndex("PerformedByUserId");
-
-                    b.HasIndex("ProposalId");
-
-                    b.ToTable("AllocationOverrides");
-                });
 
             modelBuilder.Entity("Dyadic.Domain.Entities.ApplicationUser", b =>
                 {
@@ -389,39 +350,6 @@ namespace Dyadic.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Dyadic.Domain.Entities.AllocationOverride", b =>
-                {
-                    b.HasOne("Dyadic.Domain.Entities.SupervisorProfile", "NewSupervisor")
-                        .WithMany()
-                        .HasForeignKey("NewSupervisorId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Dyadic.Domain.Entities.SupervisorProfile", "OldSupervisor")
-                        .WithMany()
-                        .HasForeignKey("OldSupervisorId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Dyadic.Domain.Entities.ApplicationUser", "PerformedBy")
-                        .WithMany()
-                        .HasForeignKey("PerformedByUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Dyadic.Domain.Entities.Proposal", "Proposal")
-                        .WithMany()
-                        .HasForeignKey("ProposalId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("NewSupervisor");
-
-                    b.Navigation("OldSupervisor");
-
-                    b.Navigation("PerformedBy");
-
-                    b.Navigation("Proposal");
                 });
 
             modelBuilder.Entity("Dyadic.Domain.Entities.Proposal", b =>
