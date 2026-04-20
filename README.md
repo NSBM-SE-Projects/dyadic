@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/logo.jpeg" alt="Dyadic logo" width="180" />
+</p>
+
 # 🎓 Dyadic - Project Approval System (PAS)
 
 **PUSL2020 - Software Development Tools and Practices**
@@ -85,19 +89,19 @@ dotnet test --collect:"XPlat Code Coverage"
 ├──────────┼────────────────────────────┼────────────────────────────────────────┤
 │ Dwain    │ Team Lead                  │ https://github.com/dwainXDL            │
 ├──────────┼────────────────────────────┼────────────────────────────────────────┤
-│ Thamindu │ TBA                        │ https://github.com/PWTMihisara         │
+│ Thamindu │ Lead Software Engineer     │ https://github.com/PWTMihisara         │
 ├──────────┼────────────────────────────┼────────────────────────────────────────┤
-│ Ashen    │ TBA                        │ https://github.com/drnykteresteinwayne │
+│ Ashen    │ Software Engineer          │ https://github.com/drnykteresteinwayne │
 ├──────────┼────────────────────────────┼────────────────────────────────────────┤
-│ Yameesha │ TBA                        │https://github.com/Yameeshaa            │
+│ Yameesha │ Software Engineer          │ https://github.com/Yameeshaa           │
 ├──────────┼────────────────────────────┼────────────────────────────────────────┤
-│ Thiranya │ TBA                        │https://github.com/thiranya123          │
+│ Thiranya │ Software Engineer          │ https://github.com/thiranya123         │
 ├──────────┼────────────────────────────┼────────────────────────────────────────┤
-│ Nisith   │ TBA                        │                                        │
+│ Nisith   │ Software Engineer          │                                        │
 ├──────────┼────────────────────────────┼────────────────────────────────────────┤
-│ Sewwandi │ TBA                        │https://github.com/kmss-sew             │
+│ Sewwandi │ Software Engineer          │ https://github.com/kmss-sew            │
 ├──────────┼────────────────────────────┼────────────────────────────────────────┤
-│ Isira    │ TBA                        │https://github.com/imanthaisira-beep    │
+│ Isira    │ Software Engineer          │ https://github.com/imanthaisira-beep   │
 └──────────┴────────────────────────────┴────────────────────────────────────────┘
 ```
 
